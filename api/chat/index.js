@@ -1,28 +1,23 @@
 // Azure Function: Chat con Gemini AI + Application Insights
 const { GoogleGenerativeAI } = require("@google/generative-ai");
-const { CosmosClient } = require("@azure/cosmos");
 const appInsights = require("applicationinsights");
 
-// Inicializar Application Insights
+// Inicializar Application Insights solo si está configurado
 if (process.env.APPLICATIONINSIGHTS_CONNECTION_STRING) {
-    appInsights.setup(process.env.APPLICATIONINSIGHTS_CONNECTION_STRING)
-        .setAutoDependencyCorrelation(true)
-        .setAutoCollectRequests(true)
-        .setAutoCollectPerformance(true)
-        .setAutoCollectExceptions(true)
-        .setAutoCollectDependencies(true)
-        .start();
+    try {
+        appInsights.setup(process.env.APPLICATIONINSIGHTS_CONNECTION_STRING)
+            .setAutoDependencyCorrelation(true)
+            .setAutoCollectRequests(true)
+            .setAutoCollectPerformance(true)
+            .setAutoCollectExceptions(true)
+            .setAutoCollectDependencies(true)
+            .start();
+    } catch (e) {
+        console.warn('App Insights setup failed:', e.message);
+    }
 }
 
 const client = appInsights.defaultClient;
-
-// Inicializar Cosmos DB Client
-let cosmosContainer = null;
-if (process.env.CosmosDbConnectionString) {
-    const cosmosClient = new CosmosClient(process.env.CosmosDbConnectionString);
-    const database = cosmosClient.database("TechStoreDB");
-    cosmosContainer = database.container("Conversations");
-}
 
 module.exports = async function (context, req) {
     const startTime = Date.now();
@@ -90,35 +85,22 @@ Responde en español de forma natural.`;
 
         // Telemetría a Application Insights
         if (client) {
-            client.trackEvent({
-                name: "ChatbotInteraction",
-                properties: {
-                    sessionId: sessionId,
-                    messageLength: userMessage.length,
-                    responseLength: botResponse.length,
-                    historyLength: chatHistory.length
-                }
-            });
-
-            client.trackMetric({
-                name: "ChatResponseTime",
-                value: duration
-            });
-        }
-
-        // Guardar en Cosmos DB
-        if (cosmosContainer) {
             try {
-                await cosmosContainer.items.create({
-                    id: context.executionContext.invocationId,
-                    sessionId: sessionId,
-                    timestamp: new Date().toISOString(),
-                    userMessage,
-                    botResponse,
-                    duration
+                client.trackEvent({
+                    name: "ChatbotInteraction",
+                    properties: {
+                        sessionId: sessionId,
+                        messageLength: userMessage.length,
+                        responseLength: botResponse.length
+                    }
                 });
-            } catch (cosmosError) {
-                context.log.warn('⚠️ No se pudo guardar en Cosmos DB:', cosmosError.message);
+
+                client.trackMetric({
+                    name: "ChatResponseTime",
+                    value: duration
+                });
+            } catch (e) {
+                context.log.warn('Telemetry failed:', e.message);
             }
         }
 
