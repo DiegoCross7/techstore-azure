@@ -4,6 +4,7 @@
   "description": "TechStore con Azure + Application Insights + Gemini AI",
   "main": "index.html",
   "scripts": {
+    "build": "echo 'Static site - no build needed'",
     "start": "func start",
     "test": "echo \"No tests configured\" && exit 0"
   },
