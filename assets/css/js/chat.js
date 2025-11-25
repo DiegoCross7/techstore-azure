@@ -4,6 +4,8 @@ function toggleChat() {
 
 const chatBox = document.getElementById("chatBox");
 const input = document.getElementById("userInput");
+let chatHistory = [];
+const sessionId = `session-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 
 function addMessage(role, text) {
     const bubble = document.createElement("div");
@@ -28,17 +30,41 @@ function addMessage(role, text) {
     chatBox.scrollTop = chatBox.scrollHeight;
 }
 
-function sendMessage() {
+async function sendMessage() {
     const msg = input.value.trim();
     if (!msg) return;
 
     addMessage("user", msg);
     input.value = "";
 
-    // Simulación (luego lo conectamos a tu API)
-    setTimeout(() => {
-        addMessage("bot", "Respuesta temporal.");
-    }, 500);
+    // Agregar al historial
+    chatHistory.push({ role: 'user', content: msg });
+
+    try {
+        const response = await fetch('/api/chat', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                message: msg,
+                history: chatHistory,
+                sessionId: sessionId,
+                inventoryContext: "Laptops Gamer, Smartphones, Auriculares, Smartwatches"
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error('Error en la respuesta del servidor');
+        }
+
+        const data = await response.json();
+        const botReply = data.response || "Lo siento, no pude procesar tu mensaje.";
+        
+        chatHistory.push({ role: 'assistant', content: botReply });
+        addMessage("bot", botReply);
+    } catch (error) {
+        console.error('Error:', error);
+        addMessage("bot", "Lo siento, tuve un problema procesando eso. ¿Podrías intentar de nuevo?");
+    }
 }
 
 input?.addEventListener("keypress", e => {
