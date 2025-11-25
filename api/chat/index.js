@@ -1,5 +1,6 @@
 // Azure Function: Chat con Gemini AI + Application Insights
 const { GoogleGenerativeAI } = require("@google/generative-ai");
+const { CosmosClient } = require("@azure/cosmos");
 const appInsights = require("applicationinsights");
 
 // Inicializar Application Insights
@@ -14,6 +15,14 @@ if (process.env.APPLICATIONINSIGHTS_CONNECTION_STRING) {
 }
 
 const client = appInsights.defaultClient;
+
+// Inicializar Cosmos DB Client
+let cosmosContainer = null;
+if (process.env.CosmosDbConnectionString) {
+    const cosmosClient = new CosmosClient(process.env.CosmosDbConnectionString);
+    const database = cosmosClient.database("TechStoreDB");
+    cosmosContainer = database.container("Conversations");
+}
 
 module.exports = async function (context, req) {
     const startTime = Date.now();
@@ -98,14 +107,20 @@ Responde en español de forma natural.`;
         }
 
         // Guardar en Cosmos DB
-        context.bindings.conversationOut = {
-            id: context.executionContext.invocationId,
-            timestamp: new Date().toISOString(),
-            sessionId: sessionId,
-            userMessage,
-            botResponse,
-            duration
-        };
+        if (cosmosContainer) {
+            try {
+                await cosmosContainer.items.create({
+                    id: context.executionContext.invocationId,
+                    sessionId: sessionId,
+                    timestamp: new Date().toISOString(),
+                    userMessage,
+                    botResponse,
+                    duration
+                });
+            } catch (cosmosError) {
+                context.log.warn('⚠️ No se pudo guardar en Cosmos DB:', cosmosError.message);
+            }
+        }
 
         context.res = {
             status: 200,
