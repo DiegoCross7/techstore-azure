@@ -28,8 +28,8 @@ jobs:
           action: "upload"
           app_location: "/"
           api_location: "api"
-          output_location: "/"
-          skip_app_build: true
+          output_location: ""
+          app_build_command: "echo 'No build needed'"
           skip_api_build: false
 
   close_pull_request_job:
