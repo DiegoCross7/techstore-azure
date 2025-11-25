@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Asistente Virtual - Chat</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3b82f6', // Un azul estándar, ajusta si tu 'text-primary' es otro
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Estilos para la barra de desplazamiento personalizada */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #475569; }
+        
+        /* Estilos para el contenido Markdown */
+        .prose p { margin-bottom: 0.5rem; }
+        .prose ul { list-style-type: disc; margin-left: 1.5rem; }
+        .prose strong { color: #e2e8f0; font-weight: bold; }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-200 h-screen flex flex-col overflow-hidden font-sans">
+
+    <header class="bg-slate-900 border-b border-slate-800 p-4 flex items-center justify-between shadow-lg z-10">
+        <div class="flex items-center gap-3">
+            <div class="bg-primary/20 p-2 rounded-full">
+                <i data-lucide="bot" class="w-6 h-6 text-primary"></i>
+            </div>
+            <div>
+                <h1 class="font-bold text-white text-lg leading-tight">Asistente Virtual AI</h1>
+                <p class="text-xs text-slate-400 flex items-center gap-1">
+                    <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span> En línea
+                </p>
+            </div>
+        </div>
+        <a href="index.html" class="text-slate-400 hover:text-white transition-colors p-2 rounded-lg hover:bg-slate-800">
+            <i data-lucide="x" class="w-6 h-6"></i>
+        </a>
+    </header>
+
+    <main id="chat-container" class="flex-1 overflow-y-auto p-4 space-y-4 scroll-smooth">
+        <div class="flex gap-3">
+            <div class="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
+                <i data-lucide="bot" class="w-5 h-5 text-primary"></i>
+            </div>
+            <div class="bg-slate-900 border border-slate-800 p-3 rounded-2xl rounded-tl-none max-w-[85%] shadow-sm">
+                <p class="text-sm text-slate-300">Hola 👋 Soy tu asistente virtual. ¿En qué puedo ayudarte hoy?</p>
+            </div>
+        </div>
+    </main>
+
+    <footer class="bg-slate-900 border-t border-slate-800 p-4">
+        <form id="chat-form" class="max-w-4xl mx-auto relative flex items-center gap-2">
+            <input 
+                type="text" 
+                id="user-input" 
+                class="w-full bg-slate-950 border border-slate-700 text-white text-sm rounded-xl px-4 py-3 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all placeholder-slate-500"
+                placeholder="Escribe tu mensaje aquí..."
+                autocomplete="off"
+            >
+            <button 
+                type="submit" 
+                id="send-btn"
+                class="bg-primary hover:bg-blue-600 text-white p-3 rounded-xl transition-all hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed flex-shrink-0 shadow-lg shadow-primary/20"
+            >
+                <i data-lucide="send" class="w-5 h-5"></i>
+            </button>
+        </form>
+        <p class="text-center text-[10px] text-slate-600 mt-2">Potenciado por Gemini AI</p>
+    </footer>
+
+    <script>
+        // Inicializar Iconos
+        lucide.createIcons();
+
+        const chatContainer = document.getElementById('chat-container');
+        const chatForm = document.getElementById('chat-form');
+        const userInput = document.getElementById('user-input');
+        const sendBtn = document.getElementById('send-btn');
+
+        // ---------------------------------------------------------
+        // ⚠️ CONFIGURACIÓN DE API (PEGA TU KEY AQUÍ ABAJO)
+        // ---------------------------------------------------------
+        const API_KEY = 'AQUI_PEGA_TU_CLAVE_QUE_ME_PASASTE'; 
+        // ---------------------------------------------------------
+
+        chatForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const message = userInput.value.trim();
+            if (!message) return;
+
+            // 1. Mostrar mensaje del usuario
+            appendMessage('user', message);
+            userInput.value = '';
+            userInput.disabled = true;
+            sendBtn.disabled = true;
+
+            // 2. Mostrar indicador de "Escribiendo..."
+            const loadingId = showLoading();
+
+            try {
+                // 3. Llamada a la API de Gemini
+                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${API_KEY}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: message }] }]
+                    })
+                });
+
+                const data = await response.json();
+
+                // Eliminar loading
+                removeLoading(loadingId);
+
+                if (data.candidates && data.candidates[0].content) {
+                    const reply = data.candidates[0].content.parts[0].text;
+                    appendMessage('bot', reply);
+                } else {
+                    appendMessage('bot', 'Lo siento, hubo un error al procesar tu respuesta.');
+                }
+
+            } catch (error) {
+                removeLoading(loadingId);
+                console.error(error);
+                appendMessage('bot', 'Error de conexión. Por favor intenta nuevamente.');
+            } finally {
+                userInput.disabled = false;
+                sendBtn.disabled = false;
+                userInput.focus();
+            }
+        });
+
+        // Función para agregar mensajes al DOM
+        function appendMessage(sender, text) {
+            const div = document.createElement('div');
+            const isBot = sender === 'bot';
+
+            div.className = `flex gap-3 ${isBot ? '' : 'flex-row-reverse'}`;
+
+            const iconHtml = isBot 
+                ? `<div class="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0"><i data-lucide="bot" class="w-5 h-5 text-primary"></i></div>`
+                : `<div class="w-8 h-8 rounded-full bg-slate-700 flex items-center justify-center flex-shrink-0"><i data-lucide="user" class="w-5 h-5 text-slate-300"></i></div>`;
+            
+            // Parsear Markdown si es el bot, texto plano si es usuario
+            const contentHtml = isBot ? marked.parse(text) : text;
+            const bubbleClass = isBot 
+                ? 'bg-slate-900 border border-slate-800 text-slate-300' 
+                : 'bg-primary text-white';
+
+            div.innerHTML = `
+                ${iconHtml}
+                <div class="${bubbleClass} p-3 rounded-2xl ${isBot ? 'rounded-tl-none' : 'rounded-tr-none'} max-w-[85%] shadow-sm text-sm prose prose-invert">
+                    ${contentHtml}
+                </div>
+            `;
+
+            chatContainer.appendChild(div);
+            lucide.createIcons(); // Re-renderizar iconos nuevos
+            scrollToBottom();
+        }
+
+        // Función para mostrar animación de carga
+        function showLoading() {
+            const id = 'loading-' + Date.now();
+            const div = document.createElement('div');
+            div.id = id;
+            div.className = 'flex gap-3';
+            div.innerHTML = `
+                <div class="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
+                    <i data-lucide="bot" class="w-5 h-5 text-primary"></i>
+                </div>
+                <div class="bg-slate-900 border border-slate-800 p-4 rounded-2xl rounded-tl-none flex gap-1 items-center h-10">
+                    <div class="w-2 h-2 bg-slate-500 rounded-full animate-bounce"></div>
+                    <div class="w-2 h-2 bg-slate-500 rounded-full animate-bounce [animation-delay:0.2s]"></div>
+                    <div class="w-2 h-2 bg-slate-500 rounded-full animate-bounce [animation-delay:0.4s]"></div>
+                </div>
+            `;
+            chatContainer.appendChild(div);
+            lucide.createIcons();
+            scrollToBottom();
+            return id;
+        }
+
+        function removeLoading(id) {
+            const element = document.getElementById(id);
+            if (element) element.remove();
+        }
+
+        function scrollToBottom() {
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sobre Nosotros - TechStore</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Fuentes Google (Inter) -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        slate: {
+                            850: '#1e293b',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800">
+
+    <!-- --- HEADER (Consistente) --- -->
+    <header class="bg-[#0B1120] text-white sticky top-0 z-50 shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <!-- Logo -->
+                <div class="flex items-center gap-2 cursor-pointer">
+                    <div class="bg-indigo-600 p-1.5 rounded-lg">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect><rect x="9" y="9" width="6" height="6"></rect><line x1="9" y1="1" x2="9" y2="4"></line><line x1="15" y1="1" x2="15" y2="4"></line><line x1="9" y1="20" x2="9" y2="23"></line><line x1="15" y1="20" x2="15" y2="23"></line><line x1="20" y1="9" x2="23" y2="9"></line><line x1="20" y1="14" x2="23" y2="14"></line><line x1="1" y1="9" x2="4" y2="9"></line><line x1="1" y1="14" x2="4" y2="14"></line></svg>
+                    </div>
+                    <div class="flex flex-col leading-none">
+                        <span class="text-xl font-bold tracking-tight">TechStore</span>
+                        <span class="text-[10px] text-gray-400 uppercase tracking-widest">Modular System</span>
+                    </div>
+                </div>
+
+                <!-- Nav Links -->
+                <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-gray-300">
+                    <a href="/index.html" class="hover:text-white transition-colors">Inicio</a>
+                    <a href="/views/nosotros.html" class="text-white font-semibold border-b-2 border-indigo-400 pb-0.5">Sobre Nosotros</a>
+                    <a href="/index.html" class="hover:text-white transition-colors">Productos</a>
+                    <a href="/index.html" class="text-white flex items-center gap-1">Ofertas <span class="text-orange-500">🔥</span></a>
+                    <a href="/views/ubicacion.html" class="hover:text-white transition-colors">Tiendas</a>
+                    <a href="/views/vip_access.html" class="hover:text-white transition-colors">VIP</a>
+                    <a href="/views/centro_ayuda.html" class="hover:text-white transition-colors">Ayuda</a>
+                </nav>
+
+                <!-- Icons -->
+                <div class="flex items-center gap-6 text-gray-300">
+                    <button class="hover:text-white transition-colors"><svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></button>
+                    <button class="hover:text-white transition-colors relative">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+                        <span class="absolute -top-2 -right-2 bg-indigo-600 text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">2</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- --- HERO SECTION --- -->
+    <div class="relative bg-[#0B1120] pb-32 pt-20 overflow-hidden">
+        <!-- Elementos decorativos de fondo -->
+        <div class="absolute top-0 right-0 -mr-20 -mt-20 w-96 h-96 bg-indigo-600/20 blur-[100px] rounded-full pointer-events-none"></div>
+        <div class="absolute bottom-0 left-0 -ml-20 -mb-20 w-96 h-96 bg-blue-600/20 blur-[100px] rounded-full pointer-events-none"></div>
+
+        <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <span class="text-indigo-400 font-semibold tracking-wider uppercase text-sm mb-4 block">Nuestra Historia</span>
+            <h1 class="text-4xl md:text-6xl font-extrabold text-white mb-6 leading-tight">
+                Impulsando la pasión por <br>
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-cyan-400">la tecnología extrema</span>
+            </h1>
+            <p class="text-gray-400 mb-10 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">
+                Desde 2014, TechStore ha sido el destino definitivo para gamers, creadores y profesionales que buscan rendimiento sin compromisos.
+            </p>
+        </div>
+    </div>
+
+    <!-- --- STATS SECTION (Floating Cards) --- -->
+    <div class="relative z-10 -mt-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-24">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <!-- Stat 1 -->
+            <div class="bg-white p-8 rounded-2xl shadow-xl border-b-4 border-indigo-600 text-center hover:-translate-y-1 transition-transform duration-300">
+                <div class="text-4xl font-extrabold text-slate-900 mb-2">10+</div>
+                <div class="text-indigo-600 font-medium mb-2">Años de Experiencia</div>
+                <p class="text-slate-500 text-sm">Liderando el mercado de hardware de alto rendimiento.</p>
+            </div>
+            <!-- Stat 2 -->
+            <div class="bg-white p-8 rounded-2xl shadow-xl border-b-4 border-cyan-500 text-center hover:-translate-y-1 transition-transform duration-300">
+                <div class="text-4xl font-extrabold text-slate-900 mb-2">50k+</div>
+                <div class="text-cyan-600 font-medium mb-2">Clientes Felices</div>
+                <p class="text-slate-500 text-sm">Desde setups gaming hasta estaciones de trabajo.</p>
+            </div>
+            <!-- Stat 3 -->
+            <div class="bg-white p-8 rounded-2xl shadow-xl border-b-4 border-orange-500 text-center hover:-translate-y-1 transition-transform duration-300">
+                <div class="text-4xl font-extrabold text-slate-900 mb-2">24h</div>
+                <div class="text-orange-600 font-medium mb-2">Soporte Técnico</div>
+                <p class="text-slate-500 text-sm">Equipo especializado listo para ayudarte siempre.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- --- MAIN CONTENT --- -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-24">
+
+        <!-- Section: Who We Are -->
+        <div class="flex flex-col lg:flex-row items-center gap-16 mb-24">
+            <div class="lg:w-1/2">
+                <div class="relative">
+                    <!-- Decorative dots -->
+                    <div class="absolute -top-4 -left-4 w-24 h-24 bg-indigo-100 rounded-full -z-10"></div>
+                    <div class="absolute -bottom-4 -right-4 w-32 h-32 bg-cyan-50 rounded-full -z-10"></div>
+                    
+                    <!-- Video Gaming RGB (Fuente confiable de Pexels) -->
+                    <div class="aspect-video bg-slate-900 rounded-2xl shadow-2xl overflow-hidden relative group transform hover:scale-[1.02] transition-all duration-500">
+                        <video 
+                            class="w-full h-full object-cover" 
+                            autoplay 
+                            loop 
+                            muted 
+                            playsinline
+                            preload="auto"
+                            poster="https://images.pexels.com/photos/7710243/pexels-photo-7710243.jpeg?auto=compress&cs=tinysrgb&w=800"
+                        >
+                            <!-- He reemplazado el link de Imgur (que tiene bloqueo) por este video de stock libre de derechos -->
+                            <source src="https://videos.pexels.com/video-files/7710243/7710243-uhd_2560_1440_30fps.mp4" type="video/mp4">
+                            Tu navegador no soporta el elemento de video.
+                        </video>
+                        <!-- Overlay sutil para unificar el tono con la marca -->
+                        <div class="absolute inset-0 bg-indigo-900/20 group-hover:bg-transparent transition-colors duration-300 pointer-events-none"></div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="lg:w-1/2">
+                <h2 class="text-3xl font-bold text-slate-900 mb-6">Más que una tienda de hardware</h2>
+                <p class="text-slate-600 leading-relaxed mb-6 text-lg">
+                    En TechStore, no solo vendemos componentes; construimos sueños. Nacimos de la necesidad de encontrar hardware de calidad premium y asesoría experta en un solo lugar.
+                </p>
+                <p class="text-slate-600 leading-relaxed mb-8">
+                    Creemos que tu computadora es una extensión de ti mismo. Ya sea que estés renderizando videos en 4K, compitiendo en esports o desarrollando el próximo gran software, nuestro objetivo es asegurar que tu equipo nunca sea el límite.
+                </p>
+                
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-600">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                        </div>
+                        <span class="font-medium text-slate-800">Distribuidores Oficiales</span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-600">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                        </div>
+                        <span class="font-medium text-slate-800">Garantía Extendida</span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-600">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                        </div>
+                        <span class="font-medium text-slate-800">Envíos a todo el país</span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-600">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                        </div>
+                        <span class="font-medium text-slate-800">Armado de PC Gratis</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section: Values -->
+        <div class="bg-slate-100 rounded-3xl p-8 md:p-16 mb-24">
+            <div class="text-center max-w-3xl mx-auto mb-12">
+                <h2 class="text-3xl font-bold text-slate-900 mb-4">Nuestros Valores</h2>
+                <p class="text-slate-600">Los pilares que nos han permitido crecer y ganar la confianza de miles de entusiastas de la tecnología.</p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Value 1 -->
+                <div class="bg-white p-8 rounded-2xl shadow-sm text-center">
+                    <div class="w-16 h-16 bg-indigo-100 text-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-3">Innovación Constante</h3>
+                    <p class="text-slate-600 leading-relaxed text-sm">Siempre estamos al día con las últimas tendencias y lanzamientos globales para traerlos primero.</p>
+                </div>
+                <!-- Value 2 -->
+                <div class="bg-white p-8 rounded-2xl shadow-sm text-center">
+                    <div class="w-16 h-16 bg-cyan-100 text-cyan-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-3">Comunidad Primero</h3>
+                    <p class="text-slate-600 leading-relaxed text-sm">Fomentamos una comunidad donde compartir conocimiento es tan importante como la venta.</p>
+                </div>
+                <!-- Value 3 -->
+                <div class="bg-white p-8 rounded-2xl shadow-sm text-center">
+                    <div class="w-16 h-16 bg-orange-100 text-orange-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><path d="m9 12 2 2 4-4"></path></svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-3">Integridad Total</h3>
+                    <p class="text-slate-600 leading-relaxed text-sm">Precios transparentes, garantías reales y honestidad en cada recomendación técnica.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section: Team (Optional) -->
+        <div class="mb-12">
+            <h2 class="text-3xl font-bold text-slate-900 mb-10 text-center">Conoce a los expertos</h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+                <!-- Team Member 1 -->
+                <div class="group">
+                    <div class="w-32 h-32 bg-slate-200 rounded-full mx-auto mb-4 overflow-hidden relative">
+                        <div class="absolute inset-0 bg-gradient-to-t from-indigo-900/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-full h-full text-slate-400 p-6" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+                    </div>
+                    <h4 class="font-bold text-slate-900">Alex Morgan</h4>
+                    <p class="text-indigo-600 text-sm font-medium">CEO & Fundador</p>
+                </div>
+                <!-- Team Member 2 -->
+                <div class="group">
+                    <div class="w-32 h-32 bg-slate-200 rounded-full mx-auto mb-4 overflow-hidden relative">
+                        <div class="absolute inset-0 bg-gradient-to-t from-indigo-900/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-full h-full text-slate-400 p-6" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+                    </div>
+                    <h4 class="font-bold text-slate-900">Sarah Lin</h4>
+                    <p class="text-indigo-600 text-sm font-medium">Directora de Producto</p>
+                </div>
+                <!-- Team Member 3 -->
+                <div class="group">
+                    <div class="w-32 h-32 bg-slate-200 rounded-full mx-auto mb-4 overflow-hidden relative">
+                        <div class="absolute inset-0 bg-gradient-to-t from-indigo-900/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-full h-full text-slate-400 p-6" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+                    </div>
+                    <h4 class="font-bold text-slate-900">David Chen</h4>
+                    <p class="text-indigo-600 text-sm font-medium">Jefe de Taller</p>
+                </div>
+                <!-- Team Member 4 -->
+                <div class="group">
+                    <div class="w-32 h-32 bg-slate-200 rounded-full mx-auto mb-4 overflow-hidden relative">
+                        <div class="absolute inset-0 bg-gradient-to-t from-indigo-900/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-full h-full text-slate-400 p-6" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+                    </div>
+                    <h4 class="font-bold text-slate-900">Elena Vega</h4>
+                    <p class="text-indigo-600 text-sm font-medium">Soporte Técnico</p>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- --- CTA SECTION --- -->
+    <div class="bg-indigo-600 py-16">
+        <div class="max-w-4xl mx-auto px-4 text-center">
+            <h2 class="text-3xl font-bold text-white mb-6">¿Listo para armar tu setup ideal?</h2>
+            <p class="text-indigo-100 mb-8 text-lg">
+                Déjanos ayudarte a elegir los mejores componentes para tu presupuesto y necesidades.
+            </p>
+            <div class="flex flex-col sm:flex-row justify-center gap-4">
+                <button class="bg-white text-indigo-600 px-8 py-4 rounded-xl font-bold hover:bg-indigo-50 hover:scale-105 transition-transform shadow-lg">
+                    Ver Productos
+                </button>
+                <button class="bg-transparent border border-white text-white px-8 py-4 rounded-xl font-bold hover:bg-white/10 hover:scale-105 transition-transform">
+                    Contactar Asesor
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- --- FOOTER --- -->
+    <footer class="bg-[#0B1120] text-gray-400 py-12 border-t border-gray-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div>
+                <div class="flex items-center gap-2 mb-4 text-white">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect><rect x="9" y="9" width="6" height="6"></rect><line x1="9" y1="1" x2="9" y2="4"></line><line x1="15" y1="1" x2="15" y2="4"></line><line x1="9" y1="20" x2="9" y2="23"></line><line x1="15" y1="20" x2="15" y2="23"></line><line x1="20" y1="9" x2="23" y2="9"></line><line x1="20" y1="14" x2="23" y2="14"></line><line x1="1" y1="9" x2="4" y2="9"></line><line x1="1" y1="14" x2="4" y2="14"></line></svg>
+                    <span class="font-bold text-lg">TechStore</span>
+                </div>
+                <p class="text-sm">Tu destino premium para la tecnología más avanzada. Hardware de alto rendimiento para trabajo y juego.</p>
+            </div>
+            <div>
+                <h4 class="text-white font-bold mb-4">Compañía</h4>
+                <ul class="space-y-2 text-sm">
+                    <li><a href="/views/nosotros.html" class="text-indigo-400 font-bold cursor-pointer">Sobre Nosotros</a></li>
+                    <li><a href="/views/blog.html" class="hover:text-white cursor-pointer">Blog Tech</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="text-white font-bold mb-4">Soporte</h4>
+                <ul class="space-y-2 text-sm">
+                    <li><a href="/views/centro_ayuda.html" class="hover:text-white cursor-pointer">Centro de Ayuda</a></li>
+                    <li><a href="/views/devoluciones.html" class="hover:text-white cursor-pointer">Devoluciones</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="text-white font-bold mb-4">Legal</h4>
+                <ul class="space-y-2 text-sm">
+                    <li><a href="/views/terminos.html" class="hover:text-white cursor-pointer">Términos</a></li>
+                    <li><a href="/views/privacidad.html" class="hover:text-white cursor-pointer">Privacidad</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="max-w-7xl mx-auto px-4 mt-12 pt-8 border-t border-gray-800 text-center text-xs">
+            © 2024 TechStore. Todos los derechos reservados.
+        </div>
+    </footer>
+
+</body>
+</html>

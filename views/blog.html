@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog Tech - TechStore</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Fuentes Google (Inter) -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome para iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        slate: {
+                            850: '#1e293b',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+        /* Efecto hover suave en las imágenes */
+        .blog-img-hover {
+            transition: transform 0.5s ease;
+        }
+        .blog-card:hover .blog-img-hover {
+            transform: scale(1.05);
+        }
+        /* Animación para el filtrado */
+        .blog-card {
+            transition: all 0.3s ease-in-out;
+        }
+        .hidden-card {
+            display: none !important;
+        }
+        /* Estilos para botones activos/inactivos */
+        .filter-btn.active {
+            background-color: #0f172a; /* slate-900 */
+            color: white;
+            border-color: #0f172a;
+        }
+        .filter-btn {
+            cursor: pointer;
+        }
+        /* Estilos paginación */
+        .page-btn {
+            width: 2.5rem;
+            height: 2.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 9999px;
+            transition: all 0.2s;
+        }
+        .page-btn.active {
+            background-color: #4F46E5; /* Indigo 600 */
+            color: white;
+            font-weight: bold;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        .page-btn:not(.active):not(:disabled) {
+            background-color: white;
+            border: 1px solid #E2E8F0;
+            color: #475569;
+        }
+        .page-btn:not(.active):not(:disabled):hover {
+            border-color: #6366F1;
+            color: #4F46E5;
+        }
+        .page-btn:disabled {
+            background-color: #F1F5F9;
+            color: #CBD5E1;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800">
+
+    <!-- --- HEADER --- -->
+    <header class="bg-[#0B1120] text-white sticky top-0 z-50 shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <!-- Logo -->
+                <div class="flex items-center gap-2 cursor-pointer">
+                    <div class="bg-indigo-600 p-1.5 rounded-lg">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect><rect x="9" y="9" width="6" height="6"></rect><line x1="9" y1="1" x2="9" y2="4"></line><line x1="15" y1="1" x2="15" y2="4"></line><line x1="9" y1="20" x2="9" y2="23"></line><line x1="15" y1="20" x2="15" y2="23"></line><line x1="20" y1="9" x2="23" y2="9"></line><line x1="20" y1="14" x2="23" y2="14"></line><line x1="1" y1="9" x2="4" y2="9"></line><line x1="1" y1="14" x2="4" y2="14"></line></svg>
+                    </div>
+                    <div class="flex flex-col leading-none">
+                        <span class="text-xl font-bold tracking-tight">TechStore</span>
+                        <span class="text-[10px] text-gray-400 uppercase tracking-widest">Modular System</span>
+                    </div>
+                </div>
+
+                <!-- Nav Links -->
+                <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-gray-300">
+                    <a href="/index.html" class="hover:text-white transition-colors">Inicio</a>
+                    <a href="/views/productos.html" class="hover:text-white transition-colors">Productos</a>
+                    <a href="/views/ofertas.html" class="text-white flex items-center gap-1">Ofertas <span class="text-orange-500">🔥</span></a>
+                    <a href="/views/ubicacion.html" class="hover:text-white transition-colors">Tiendas</a>
+                    <a href="/views/vip_access.html" class="hover:text-white transition-colors">VIP</a>
+                    <a href="/views/centro_ayuda.html" class="text-indigo-400 font-semibold border-b-2 border-indigo-400 pb-0.5">Ayuda</a>
+                </nav>
+
+                <!-- Icons -->
+                <div class="flex items-center gap-6 text-gray-300">
+                    <button class="hover:text-white transition-colors"><i class="fa-solid fa-magnifying-glass"></i></button>
+                    <button class="hover:text-white transition-colors relative">
+                        <i class="fa-solid fa-cart-shopping"></i>
+                        <span class="absolute -top-2 -right-2 bg-indigo-600 text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">2</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- --- HERO SECTION (Featured Post) --- -->
+    <div class="bg-[#0B1120] pb-20 pt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            
+            <div class="text-center mb-12">
+                <span class="text-indigo-400 font-bold tracking-wider uppercase text-xs mb-2 block">Explora el Futuro</span>
+                <h1 class="text-4xl md:text-5xl font-extrabold text-white mb-4">Noticias y Análisis Tech</h1>
+                <p class="text-gray-400 max-w-2xl mx-auto">Mantente al día con las últimas novedades en hardware, guías de optimización y reseñas profundas.</p>
+            </div>
+
+            <!-- Featured Post Card -->
+            <div class="relative rounded-3xl overflow-hidden shadow-2xl group cursor-pointer h-[400px] md:h-[500px]">
+                <img src="https://images.unsplash.com/photo-1593640408182-31c70c8268f5?auto=format&fit=crop&q=80&w=2000" alt="PC Gamer Setup" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/60 to-transparent"></div>
+                
+                <div class="absolute bottom-0 left-0 p-8 md:p-12 max-w-3xl">
+                    <div class="flex items-center gap-3 mb-4">
+                        <span class="bg-indigo-600 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wide">Destacado</span>
+                        <span class="text-gray-300 text-sm flex items-center gap-1"><i class="fa-regular fa-clock"></i> 5 min lectura</span>
+                    </div>
+                    <h2 class="text-3xl md:text-4xl font-bold text-white mb-4 leading-tight group-hover:text-indigo-400 transition-colors">
+                        La Guía Definitiva para optimizar Windows 11 para Gaming en 2024
+                    </h2>
+                    <p class="text-gray-300 mb-6 line-clamp-2 md:line-clamp-3 text-lg">
+                        Descubre los ajustes ocultos y configuraciones esenciales para exprimir hasta el último FPS de tu tarjeta gráfica sin sacrificar estabilidad.
+                    </p>
+                    <div class="flex items-center gap-4">
+                        <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=100" alt="Autor" class="w-10 h-10 rounded-full border-2 border-white/20">
+                        <div>
+                            <p class="text-white text-sm font-semibold">Carlos R.</p>
+                            <p class="text-gray-400 text-xs">Editor Jefe</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- --- CATEGORY FILTER (Botones funcionales) --- -->
+    <div class="bg-white border-b border-slate-200 sticky top-20 z-40 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 overflow-x-auto">
+            <div class="flex items-center gap-2 py-4 whitespace-nowrap" id="filterContainer">
+                <button class="filter-btn active bg-white text-slate-600 border border-slate-200 px-5 py-2 rounded-full text-sm font-medium hover:border-indigo-500 hover:text-indigo-600 transition-all" data-filter="all">Todo</button>
+                <button class="filter-btn bg-white text-slate-600 border border-slate-200 px-5 py-2 rounded-full text-sm font-medium hover:border-indigo-500 hover:text-indigo-600 transition-all" data-filter="hardware">Hardware</button>
+                <button class="filter-btn bg-white text-slate-600 border border-slate-200 px-5 py-2 rounded-full text-sm font-medium hover:border-indigo-500 hover:text-indigo-600 transition-all" data-filter="tutoriales">Tutoriales</button>
+                <button class="filter-btn bg-white text-slate-600 border border-slate-200 px-5 py-2 rounded-full text-sm font-medium hover:border-indigo-500 hover:text-indigo-600 transition-all" data-filter="reviews">Reviews</button>
+                <button class="filter-btn bg-white text-slate-600 border border-slate-200 px-5 py-2 rounded-full text-sm font-medium hover:border-indigo-500 hover:text-indigo-600 transition-all" data-filter="perifericos">Periféricos</button>
+                <button class="filter-btn bg-white text-slate-600 border border-slate-200 px-5 py-2 rounded-full text-sm font-medium hover:border-indigo-500 hover:text-indigo-600 transition-all" data-filter="esports">E-Sports</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- --- MAIN CONTENT --- -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        
+        <!-- Blog Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16" id="blogGrid">
+            
+            <!-- Post 1: Periféricos -->
+            <article class="blog-card bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-shadow border border-slate-100 flex flex-col" data-category="perifericos">
+                <div class="relative overflow-hidden h-52">
+                    <span class="absolute top-4 left-4 bg-indigo-600 text-white text-xs font-bold px-3 py-1 rounded-md z-10">Periféricos</span>
+                    <img src="https://images.pexels.com/photos/1779487/pexels-photo-1779487.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Teclados" class="blog-img-hover w-full h-full object-cover">
+                </div>
+                <div class="p-6 flex-1 flex flex-col">
+                    <div class="flex items-center text-xs text-slate-400 mb-3 gap-3">
+                        <span><i class="fa-regular fa-calendar"></i> 22 Oct, 2024</span>
+                        <span><i class="fa-regular fa-clock"></i> 8 min lectura</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-3 leading-snug hover:text-indigo-600 transition-colors cursor-pointer">
+                        Teclados Mecánicos: ¿Switches Rojos, Azules o Marrones?
+                    </h3>
+                    <p class="text-slate-600 text-sm mb-4 line-clamp-3 flex-1">
+                        Analizamos las diferencias sonoras y táctiles de los interruptores más populares para ayudarte a elegir tu arma perfecta.
+                    </p>
+                    <a href="#" class="inline-flex items-center text-indigo-600 font-semibold text-sm hover:underline mt-auto">
+                        Leer artículo <i class="fa-solid fa-arrow-right ml-1"></i>
+                    </a>
+                </div>
+            </article>
+
+            <!-- Post 2: Tutoriales -->
+            <article class="blog-card bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-shadow border border-slate-100 flex flex-col" data-category="tutoriales">
+                <div class="relative overflow-hidden h-52">
+                    <span class="absolute top-4 left-4 bg-cyan-600 text-white text-xs font-bold px-3 py-1 rounded-md z-10">Tutoriales</span>
+                    <img src="https://images.unsplash.com/photo-1587202372775-e229f172b9d7?auto=format&fit=crop&q=80&w=800" alt="Pasta Térmica" class="blog-img-hover w-full h-full object-cover">
+                </div>
+                <div class="p-6 flex-1 flex flex-col">
+                    <div class="flex items-center text-xs text-slate-400 mb-3 gap-3">
+                        <span><i class="fa-regular fa-calendar"></i> 20 Oct, 2024</span>
+                        <span><i class="fa-regular fa-clock"></i> 12 min lectura</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-3 leading-snug hover:text-indigo-600 transition-colors cursor-pointer">
+                        Mantenimiento Preventivo: Cómo cambiar la pasta térmica
+                    </h3>
+                    <p class="text-slate-600 text-sm mb-4 line-clamp-3 flex-1">
+                        Una guía paso a paso para bajar la temperatura de tu CPU y extender la vida útil de tus componentes.
+                    </p>
+                    <a href="#" class="inline-flex items-center text-indigo-600 font-semibold text-sm hover:underline mt-auto">
+                        Leer artículo <i class="fa-solid fa-arrow-right ml-1"></i>
+                    </a>
+                </div>
+            </article>
+
+            <!-- Post 3: Hardware -->
+            <article class="blog-card bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-shadow border border-slate-100 flex flex-col" data-category="hardware">
+                <div class="relative overflow-hidden h-52">
+                    <span class="absolute top-4 left-4 bg-orange-500 text-white text-xs font-bold px-3 py-1 rounded-md z-10">Hardware</span>
+                    <img src="https://images.unsplash.com/photo-1591488320449-011701bb6704?auto=format&fit=crop&q=80&w=800" alt="Monitor" class="blog-img-hover w-full h-full object-cover">
+                </div>
+                <div class="p-6 flex-1 flex flex-col">
+                    <div class="flex items-center text-xs text-slate-400 mb-3 gap-3">
+                        <span><i class="fa-regular fa-calendar"></i> 18 Oct, 2024</span>
+                        <span><i class="fa-regular fa-clock"></i> 6 min lectura</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-3 leading-snug hover:text-indigo-600 transition-colors cursor-pointer">
+                        Monitores: ¿Vale la pena dar el salto a OLED?
+                    </h3>
+                    <p class="text-slate-600 text-sm mb-4 line-clamp-3 flex-1">
+                        Comparamos las tecnologías IPS, VA y OLED para gaming competitivo y creación de contenido.
+                    </p>
+                    <a href="#" class="inline-flex items-center text-indigo-600 font-semibold text-sm hover:underline mt-auto">
+                        Leer artículo <i class="fa-solid fa-arrow-right ml-1"></i>
+                    </a>
+                </div>
+            </article>
+
+            <!-- Post 4: E-Sports (Antes era Noticias) -->
+            <article class="blog-card bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-shadow border border-slate-100 flex flex-col" data-category="esports">
+                <div class="relative overflow-hidden h-52">
+                    <span class="absolute top-4 left-4 bg-purple-600 text-white text-xs font-bold px-3 py-1 rounded-md z-10">E-Sports</span>
+                    <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&q=80&w=800" alt="Retro Gaming" class="blog-img-hover w-full h-full object-cover">
+                </div>
+                <div class="p-6 flex-1 flex flex-col">
+                    <div class="flex items-center text-xs text-slate-400 mb-3 gap-3">
+                        <span><i class="fa-regular fa-calendar"></i> 15 Oct, 2024</span>
+                        <span><i class="fa-regular fa-clock"></i> 4 min lectura</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-3 leading-snug hover:text-indigo-600 transition-colors cursor-pointer">
+                        El auge de las consolas portátiles en 2025
+                    </h3>
+                    <p class="text-slate-600 text-sm mb-4 line-clamp-3 flex-1">
+                        Desde Steam Deck hasta los nuevos competidores, el mercado portátil está más vivo que nunca.
+                    </p>
+                    <a href="#" class="inline-flex items-center text-indigo-600 font-semibold text-sm hover:underline mt-auto">
+                        Leer artículo <i class="fa-solid fa-arrow-right ml-1"></i>
+                    </a>
+                </div>
+            </article>
+
+            <!-- Post 5: Hardware -->
+            <article class="blog-card bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-shadow border border-slate-100 flex flex-col" data-category="hardware">
+                <div class="relative overflow-hidden h-52">
+                    <span class="absolute top-4 left-4 bg-green-600 text-white text-xs font-bold px-3 py-1 rounded-md z-10">Hardware</span>
+                    <img src="https://images.unsplash.com/photo-1591799264318-7e6ef8ddb7ea?auto=format&fit=crop&q=80&w=800" alt="CPU" class="blog-img-hover w-full h-full object-cover">
+                </div>
+                <div class="p-6 flex-1 flex flex-col">
+                    <div class="flex items-center text-xs text-slate-400 mb-3 gap-3">
+                        <span><i class="fa-regular fa-calendar"></i> 10 Oct, 2024</span>
+                        <span><i class="fa-regular fa-clock"></i> 10 min lectura</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-3 leading-snug hover:text-indigo-600 transition-colors cursor-pointer">
+                        Intel vs AMD: ¿Qué CPU elegir para renderizado 3D?
+                    </h3>
+                    <p class="text-slate-600 text-sm mb-4 line-clamp-3 flex-1">
+                        Ponemos a prueba los últimos flagships en Blender y Premiere Pro. Los resultados te sorprenderán.
+                    </p>
+                    <a href="#" class="inline-flex items-center text-indigo-600 font-semibold text-sm hover:underline mt-auto">
+                        Leer artículo <i class="fa-solid fa-arrow-right ml-1"></i>
+                    </a>
+                </div>
+            </article>
+
+            <!-- Post 6: Reviews -->
+            <article class="blog-card bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-shadow border border-slate-100 flex flex-col" data-category="reviews">
+                <div class="relative overflow-hidden h-52">
+                    <span class="absolute top-4 left-4 bg-indigo-600 text-white text-xs font-bold px-3 py-1 rounded-md z-10">Reviews</span>
+                    <img src="https://images.pexels.com/photos/2115256/pexels-photo-2115256.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Mouse" class="blog-img-hover w-full h-full object-cover">
+                </div>
+                <div class="p-6 flex-1 flex flex-col">
+                    <div class="flex items-center text-xs text-slate-400 mb-3 gap-3">
+                        <span><i class="fa-regular fa-calendar"></i> 05 Oct, 2024</span>
+                        <span><i class="fa-regular fa-clock"></i> 5 min lectura</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-3 leading-snug hover:text-indigo-600 transition-colors cursor-pointer">
+                        Mice Ultraligeros: ¿Moda pasajera o ventaja real?
+                    </h3>
+                    <p class="text-slate-600 text-sm mb-4 line-clamp-3 flex-1">
+                        Probamos los ratones de menos de 60g para ver si realmente mejoran tu aim en shooters competitivos.
+                    </p>
+                    <a href="#" class="inline-flex items-center text-indigo-600 font-semibold text-sm hover:underline mt-auto">
+                        Leer artículo <i class="fa-solid fa-arrow-right ml-1"></i>
+                    </a>
+                </div>
+            </article>
+
+        </div>
+
+        <!-- Pagination Controlada por JS -->
+        <div class="flex justify-center">
+            <nav class="flex items-center gap-2" id="paginationNav">
+                <!-- Se generará dinámicamente -->
+            </nav>
+        </div>
+    </main>
+
+    <!-- --- NEWSLETTER SECTION --- -->
+    <div class="bg-slate-900 py-16 relative overflow-hidden">
+        <div class="absolute inset-0 bg-indigo-900/20"></div>
+        <div class="absolute -top-24 -right-24 w-96 h-96 bg-indigo-600/20 blur-[128px] rounded-full"></div>
+        
+        <div class="max-w-4xl mx-auto px-4 relative z-10 text-center">
+            <i class="fa-regular fa-envelope text-5xl text-indigo-500 mb-4"></i>
+            <h2 class="text-3xl font-bold text-white mb-4">Suscríbete al Tech Digest</h2>
+            <p class="text-slate-400 mb-8">Recibe las mejores guías, reviews exclusivas y ofertas secretas directamente en tu bandeja de entrada una vez a la semana.</p>
+            
+            <form class="flex flex-col sm:flex-row gap-4 max-w-lg mx-auto" onsubmit="event.preventDefault();">
+                <input type="email" placeholder="tu@email.com" class="flex-1 px-6 py-3 rounded-xl bg-white/10 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 backdrop-blur-sm">
+                <button class="px-8 py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-xl transition-colors shadow-lg">
+                    Suscribirme
+                </button>
+            </form>
+            <p class="text-slate-500 text-xs mt-4">Respetamos tu privacidad. Date de baja cuando quieras.</p>
+        </div>
+    </div>
+
+    <!-- --- FOOTER --- -->
+    <footer class="bg-[#0B1120] text-gray-400 py-12 border-t border-gray-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div>
+                <div class="flex items-center gap-2 mb-4 text-white">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect><rect x="9" y="9" width="6" height="6"></rect><line x1="9" y1="1" x2="9" y2="4"></line><line x1="15" y1="1" x2="15" y2="4"></line><line x1="9" y1="20" x2="9" y2="23"></line><line x1="15" y1="20" x2="15" y2="23"></line><line x1="20" y1="9" x2="23" y2="9"></line><line x1="20" y1="14" x2="23" y2="14"></line><line x1="1" y1="9" x2="4" y2="9"></line><line x1="1" y1="14" x2="4" y2="14"></line></svg>
+                    <span class="font-bold text-lg">TechStore</span>
+                </div>
+                <p class="text-sm">Tu destino premium para la tecnología más avanzada. Hardware de alto rendimiento para trabajo y juego.</p>
+            </div>
+            <div>
+                <h4 class="text-white font-bold mb-4">Compañía</h4>
+                <ul class="space-y-2 text-sm">
+                    <li><a href="/views/nosotros.html" class="hover:text-white cursor-pointer">Sobre Nosotros</a></li>
+                    <li><a href="/views/blog.html" class="text-indigo-400 font-bold cursor-pointer">Blog Tech</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="text-white font-bold mb-4">Soporte</h4>
+                <ul class="space-y-2 text-sm">
+                    <li><a href="/views/centro_ayuda.html" class="hover:text-white cursor-pointer">Centro de Ayuda</a></li>
+                    <li><a href="/views/devoluciones.html" class="hover:text-white cursor-pointer">Devoluciones</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="text-white font-bold mb-4">Legal</h4>
+                <ul class="space-y-2 text-sm">
+                    <li><a href="/views/terminos.html" class="hover:text-white cursor-pointer">Términos</a></li>
+                    <li><a href="/views/privacidad.html" class="hover:text-white cursor-pointer">Privacidad</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="max-w-7xl mx-auto px-4 mt-12 pt-8 border-t border-gray-800 text-center text-xs">
+            © 2024 TechStore. Todos los derechos reservados.
+        </div>
+    </footer>
+
+    <!-- --- SCRIPT COMPLETO: Paginación + Filtros --- -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- CONFIGURACIÓN ---
+            const ITEMS_PER_PAGE = 3; // Cambiado a 3 para que veas el efecto con 6 items
+            let currentPage = 1;
+            let currentFilter = 'all';
+
+            // --- ELEMENTOS DOM ---
+            const filterBtns = document.querySelectorAll('.filter-btn');
+            const allCards = Array.from(document.querySelectorAll('.blog-card'));
+            const paginationNav = document.getElementById('paginationNav');
+
+            // --- INICIALIZACIÓN ---
+            updateDisplay();
+
+            // --- EVENT LISTENER: FILTROS ---
+            filterBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    // Resetear estilos botones
+                    filterBtns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+
+                    // Actualizar estado
+                    currentFilter = btn.getAttribute('data-filter');
+                    currentPage = 1; // Siempre volver a pág 1 al filtrar
+
+                    updateDisplay();
+                });
+            });
+
+            // --- FUNCIÓN PRINCIPAL: ACTUALIZAR VISTA ---
+            function updateDisplay() {
+                // 1. Filtrar lista completa
+                const visibleCards = allCards.filter(card => {
+                    const category = card.getAttribute('data-category');
+                    return currentFilter === 'all' || category === currentFilter;
+                });
+
+                // 2. Calcular paginación
+                const totalPages = Math.ceil(visibleCards.length / ITEMS_PER_PAGE);
+                
+                // Validar página actual (por si acaso)
+                if (currentPage > totalPages) currentPage = 1;
+                if (totalPages === 0) currentPage = 1; // Caso sin resultados
+
+                // 3. Determinar rango de índices a mostrar
+                const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+                const endIndex = startIndex + ITEMS_PER_PAGE;
+
+                // 4. Renderizar Cards (Mostrar/Ocultar)
+                allCards.forEach(card => {
+                    // Primero ocultar todo
+                    card.classList.add('hidden-card');
+                });
+
+                // Mostrar solo los que pasan el filtro Y están en el rango de página
+                visibleCards.slice(startIndex, endIndex).forEach(card => {
+                    card.classList.remove('hidden-card');
+                });
+
+                // 5. Renderizar Controles de Paginación
+                renderPaginationControls(totalPages);
+            }
+
+            // --- FUNCIÓN: RENDERIZAR BOTONES PAGINACIÓN ---
+            function renderPaginationControls(totalPages) {
+                paginationNav.innerHTML = ''; // Limpiar
+
+                if (totalPages <= 1) return; // No mostrar si hay solo 1 pág
+
+                // Botón Anterior
+                const prevBtn = createPageButton('<i class="fa-solid fa-chevron-left"></i>', () => {
+                    if (currentPage > 1) {
+                        currentPage--;
+                        updateDisplay();
+                    }
+                });
+                prevBtn.disabled = currentPage === 1;
+                paginationNav.appendChild(prevBtn);
+
+                // Números de Página
+                for (let i = 1; i <= totalPages; i++) {
+                    const numBtn = createPageButton(i, () => {
+                        currentPage = i;
+                        updateDisplay();
+                    });
+                    if (i === currentPage) numBtn.classList.add('active');
+                    paginationNav.appendChild(numBtn);
+                }
+
+                // Botón Siguiente
+                const nextBtn = createPageButton('<i class="fa-solid fa-chevron-right"></i>', () => {
+                    if (currentPage < totalPages) {
+                        currentPage++;
+                        updateDisplay();
+                    }
+                });
+                nextBtn.disabled = currentPage === totalPages;
+                paginationNav.appendChild(nextBtn);
+            }
+
+            // Helper para crear botones
+            function createPageButton(content, onClick) {
+                const btn = document.createElement('button');
+                btn.innerHTML = content;
+                btn.className = 'page-btn';
+                btn.onclick = onClick;
+                return btn;
+            }
+        });
+    </script>
+</body>
+</html>

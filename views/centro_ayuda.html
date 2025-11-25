@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Centro de Ayuda - TechStore</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Fuentes Google (Inter) -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        slate: {
+                            850: '#1e293b',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+        /* Transiciones suaves para el acordeón */
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out, padding 0.3s ease;
+        }
+        .faq-answer.active {
+            max-height: 200px; /* Altura suficiente para el contenido */
+        }
+        .rotate-180 {
+            transform: rotate(180deg);
+        }
+        .chevron {
+            transition: transform 0.3s ease;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800">
+
+    <!-- --- HEADER --- -->
+    <header class="bg-[#0B1120] text-white sticky top-0 z-50 shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <!-- Logo -->
+                <div class="flex items-center gap-2 cursor-pointer">
+                    <div class="bg-indigo-600 p-1.5 rounded-lg">
+                        <!-- Icono CPU -->
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect><rect x="9" y="9" width="6" height="6"></rect><line x1="9" y1="1" x2="9" y2="4"></line><line x1="15" y1="1" x2="15" y2="4"></line><line x1="9" y1="20" x2="9" y2="23"></line><line x1="15" y1="20" x2="15" y2="23"></line><line x1="20" y1="9" x2="23" y2="9"></line><line x1="20" y1="14" x2="23" y2="14"></line><line x1="1" y1="9" x2="4" y2="9"></line><line x1="1" y1="14" x2="4" y2="14"></line></svg>
+                    </div>
+                    <div class="flex flex-col leading-none">
+                        <span class="text-xl font-bold tracking-tight">TechStore</span>
+                        <span class="text-[10px] text-gray-400 uppercase tracking-widest">Modular System</span>
+                    </div>
+                </div>
+
+                <!-- Nav Links -->
+                <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-gray-300">
+                    <a href="/index.html" class="hover:text-white transition-colors">Inicio</a>
+                    <a href="/index.html" class="hover:text-white transition-colors">Productos</a>
+                    <a href="/index.html" class="text-white flex items-center gap-1">
+                        Ofertas <span class="text-orange-500">🔥</span>
+                    </a>
+                    <a href="/views/ubicacion.html" class="hover:text-white transition-colors">Tiendas</a>
+                    <a href="/views/vip_access.html" class="hover:text-white transition-colors">VIP</a>
+                    <a href="/views/centro_ayuda.html" class="text-indigo-400 font-semibold border-b-2 border-indigo-400 pb-0.5">Ayuda</a>
+                </nav>
+
+                <!-- Icons -->
+                <div class="flex items-center gap-6 text-gray-300">
+                    <button class="hover:text-white transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                    </button>
+                    <button class="hover:text-white transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+                    </button>
+                    <button class="hover:text-white transition-colors relative">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+                        <span class="absolute -top-2 -right-2 bg-indigo-600 text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">2</span>
+                    </button>
+                    <button class="md:hidden text-white">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- --- HERO SECTION --- -->
+    <div class="relative bg-[#0B1120] pb-24 pt-12">
+        <div class="absolute inset-0 overflow-hidden">
+            <!-- Decorative background blur -->
+            <div class="absolute -top-[100px] left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-indigo-600/20 blur-[100px] rounded-full pointer-events-none"></div>
+        </div>
+
+        <div class="relative max-w-4xl mx-auto px-4 text-center">
+            <h1 class="text-3xl md:text-5xl font-extrabold text-white mb-6">
+                ¿Cómo podemos ayudarte hoy?
+            </h1>
+            <p class="text-gray-400 mb-8 text-lg">
+                Busca respuestas sobre tus pedidos, productos y cuenta.
+            </p>
+
+            <!-- Search Bar -->
+            <div class="relative max-w-2xl mx-auto">
+                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                </div>
+                <input
+                    type="text"
+                    id="searchInput"
+                    class="block w-full pl-12 pr-4 py-4 rounded-xl border-none ring-2 ring-indigo-500/50 focus:ring-indigo-500 bg-white/10 text-white placeholder-gray-400 backdrop-blur-sm shadow-xl transition-all outline-none"
+                    placeholder="Buscar 'devoluciones', 'drivers', 'envíos'..."
+                />
+            </div>
+        </div>
+    </div>
+
+    <!-- --- MAIN CONTENT --- -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-16 relative z-10 mb-20">
+        
+        <!-- Categories Grid -->
+        <div id="categoriesGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
+            <!-- Cat 1: Envíos -->
+            <div class="category-card bg-white rounded-2xl p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-slate-100 cursor-pointer group" data-keywords="envios seguimiento rastreo paquete">
+                <div class="bg-indigo-50 w-14 h-14 rounded-xl flex items-center justify-center mb-4 group-hover:bg-indigo-600 transition-colors duration-300">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7 text-indigo-600 group-hover:text-white transition-colors duration-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
+                </div>
+                <h3 class="text-xl font-bold text-slate-900 mb-2 group-hover:text-indigo-600 transition-colors">Envíos y Seguimiento</h3>
+                <p class="text-slate-500 text-sm leading-relaxed">Rastrea tu paquete, tiempos de entrega y costos.</p>
+            </div>
+
+            <!-- Cat 2: Devoluciones -->
+            <div class="category-card bg-white rounded-2xl p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-slate-100 cursor-pointer group" data-keywords="devoluciones cambios reembolso garantia">
+                <div class="bg-indigo-50 w-14 h-14 rounded-xl flex items-center justify-center mb-4 group-hover:bg-indigo-600 transition-colors duration-300">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7 text-indigo-600 group-hover:text-white transition-colors duration-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"></polyline><polyline points="23 20 23 14 17 14"></polyline><path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15"></path></svg>
+                </div>
+                <h3 class="text-xl font-bold text-slate-900 mb-2 group-hover:text-indigo-600 transition-colors">Devoluciones y Cambios</h3>
+                <p class="text-slate-500 text-sm leading-relaxed">Política de reembolso, devoluciones y garantías.</p>
+            </div>
+
+            <!-- Cat 3: Pagos -->
+            <div class="category-card bg-white rounded-2xl p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-slate-100 cursor-pointer group" data-keywords="pagos facturacion tarjeta dinero">
+                <div class="bg-indigo-50 w-14 h-14 rounded-xl flex items-center justify-center mb-4 group-hover:bg-indigo-600 transition-colors duration-300">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7 text-indigo-600 group-hover:text-white transition-colors duration-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
+                </div>
+                <h3 class="text-xl font-bold text-slate-900 mb-2 group-hover:text-indigo-600 transition-colors">Pagos y Facturación</h3>
+                <p class="text-slate-500 text-sm leading-relaxed">Métodos de pago, facturas y promociones.</p>
+            </div>
+
+            <!-- Cat 4: Soporte -->
+            <div class="category-card bg-white rounded-2xl p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-slate-100 cursor-pointer group" data-keywords="soporte tecnico drivers configuracion ayuda">
+                <div class="bg-indigo-50 w-14 h-14 rounded-xl flex items-center justify-center mb-4 group-hover:bg-indigo-600 transition-colors duration-300">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7 text-indigo-600 group-hover:text-white transition-colors duration-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect><rect x="9" y="9" width="6" height="6"></rect><line x1="9" y1="1" x2="9" y2="4"></line><line x1="15" y1="1" x2="15" y2="4"></line><line x1="9" y1="20" x2="9" y2="23"></line><line x1="15" y1="20" x2="15" y2="23"></line><line x1="20" y1="9" x2="23" y2="9"></line><line x1="20" y1="14" x2="23" y2="14"></line><line x1="1" y1="9" x2="4" y2="9"></line><line x1="1" y1="14" x2="4" y2="14"></line></svg>
+                </div>
+                <h3 class="text-xl font-bold text-slate-900 mb-2 group-hover:text-indigo-600 transition-colors">Soporte Técnico</h3>
+                <p class="text-slate-500 text-sm leading-relaxed">Ayuda con configuración, drivers y fallos.</p>
+            </div>
+
+            <!-- Cat 5: Cuenta -->
+            <div class="category-card bg-white rounded-2xl p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-slate-100 cursor-pointer group" data-keywords="cuenta seguridad password perfil">
+                <div class="bg-indigo-50 w-14 h-14 rounded-xl flex items-center justify-center mb-4 group-hover:bg-indigo-600 transition-colors duration-300">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7 text-indigo-600 group-hover:text-white transition-colors duration-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                </div>
+                <h3 class="text-xl font-bold text-slate-900 mb-2 group-hover:text-indigo-600 transition-colors">Cuenta y Seguridad</h3>
+                <p class="text-slate-500 text-sm leading-relaxed">Gestionar perfil, contraseñas y privacidad.</p>
+            </div>
+
+            <!-- Cat 6: Garantía -->
+            <div class="category-card bg-white rounded-2xl p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-slate-100 cursor-pointer group" data-keywords="garantia proteccion cobertura">
+                <div class="bg-indigo-50 w-14 h-14 rounded-xl flex items-center justify-center mb-4 group-hover:bg-indigo-600 transition-colors duration-300">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7 text-indigo-600 group-hover:text-white transition-colors duration-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><path d="m9 12 2 2 4-4"></path></svg>
+                </div>
+                <h3 class="text-xl font-bold text-slate-900 mb-2 group-hover:text-indigo-600 transition-colors">Garantía TechStore</h3>
+                <p class="text-slate-500 text-sm leading-relaxed">Cobertura extendida y protección de compras.</p>
+            </div>
+        </div>
+
+        <!-- --- FAQ SECTION --- -->
+        <div class="max-w-3xl mx-auto mb-20">
+            <h2 class="text-3xl font-bold text-slate-900 text-center mb-8">Preguntas Frecuentes</h2>
+            <div class="space-y-4" id="faqContainer">
+                
+                <!-- FAQ 1 -->
+                <div class="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+                    <button class="faq-btn w-full flex justify-between items-center p-5 text-left focus:outline-none">
+                        <span class="font-semibold text-slate-800 text-lg">¿Cuánto tiempo tarda en llegar mi pedido?</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="chevron w-5 h-5 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    </button>
+                    <div class="faq-answer px-5 text-slate-600">
+                        <div class="pb-5">
+                            Para envíos nacionales estándar, el tiempo estimado es de 2 a 5 días hábiles. Los envíos express llegan en 24-48 horas. Recibirás un enlace de seguimiento en tu correo.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FAQ 2 -->
+                <div class="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+                    <button class="faq-btn w-full flex justify-between items-center p-5 text-left focus:outline-none">
+                        <span class="font-semibold text-slate-800 text-lg">¿Cómo puedo solicitar una devolución?</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="chevron w-5 h-5 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    </button>
+                    <div class="faq-answer px-5 text-slate-600">
+                        <div class="pb-5">
+                            Puedes iniciar una devolución desde tu perfil en la sección 'Mis Pedidos'. Tienes hasta 30 días después de recibir el producto. El producto debe estar en su empaque original.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FAQ 3 -->
+                <div class="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+                    <button class="faq-btn w-full flex justify-between items-center p-5 text-left focus:outline-none">
+                        <span class="font-semibold text-slate-800 text-lg">¿Aceptan pagos con criptomonedas?</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="chevron w-5 h-5 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    </button>
+                    <div class="faq-answer px-5 text-slate-600">
+                        <div class="pb-5">
+                            Actualmente aceptamos tarjetas de crédito/débito, PayPal y transferencias bancarias. Estamos trabajando para integrar pagos con cripto próximamente.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FAQ 4 -->
+                <div class="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+                    <button class="faq-btn w-full flex justify-between items-center p-5 text-left focus:outline-none">
+                        <span class="font-semibold text-slate-800 text-lg">¿Qué cubre la garantía de los productos?</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="chevron w-5 h-5 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    </button>
+                    <div class="faq-answer px-5 text-slate-600">
+                        <div class="pb-5">
+                            Todos nuestros productos electrónicos cuentan con 1 año de garantía directa con TechStore contra defectos de fábrica, además de la garantía del fabricante.
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="text-center mt-6">
+                <a href="#" class="text-indigo-600 font-medium hover:text-indigo-800 hover:underline">
+                    Ver todas las preguntas frecuentes &rarr;
+                </a>
+            </div>
+        </div>
+
+        <!-- --- CONTACT BANNER --- -->
+        <div class="bg-indigo-600 rounded-3xl p-8 md:p-12 text-center text-white shadow-2xl relative overflow-hidden">
+            <div class="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 rounded-full bg-white/10 blur-3xl"></div>
+            <div class="absolute bottom-0 left-0 -ml-16 -mb-16 w-64 h-64 rounded-full bg-black/10 blur-3xl"></div>
+
+            <h2 class="text-2xl md:text-3xl font-bold mb-4 relative z-10">¿No encuentras lo que buscas?</h2>
+            <p class="text-indigo-100 mb-8 max-w-2xl mx-auto relative z-10">
+                Nuestro equipo de soporte técnico está disponible de Lunes a Sábado de 9:00 am a 8:00 pm.
+            </p>
+            
+            <div class="flex flex-col sm:flex-row justify-center gap-4 relative z-10">
+                <button class="flex items-center justify-center gap-2 bg-white text-indigo-700 px-6 py-3 rounded-xl font-bold hover:bg-gray-50 hover:scale-105 transition-all shadow-lg">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+                    Chat en Vivo
+                </button>
+                <button class="flex items-center justify-center gap-2 bg-indigo-700 text-white px-6 py-3 rounded-xl font-bold hover:bg-indigo-800 hover:scale-105 transition-all shadow-lg border border-indigo-500">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                    Enviar Ticket
+                </button>
+                <button class="flex items-center justify-center gap-2 bg-transparent text-white px-6 py-3 rounded-xl font-bold hover:bg-indigo-700/50 hover:scale-105 transition-all border border-indigo-400">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+                    Llámanos
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- --- FOOTER --- -->
+    <footer class="bg-[#0B1120] text-gray-400 py-12 border-t border-gray-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div>
+                <div class="flex items-center gap-2 mb-4 text-white">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect><rect x="9" y="9" width="6" height="6"></rect><line x1="9" y1="1" x2="9" y2="4"></line><line x1="15" y1="1" x2="15" y2="4"></line><line x1="9" y1="20" x2="9" y2="23"></line><line x1="15" y1="20" x2="15" y2="23"></line><line x1="20" y1="9" x2="23" y2="9"></line><line x1="20" y1="14" x2="23" y2="14"></line><line x1="1" y1="9" x2="4" y2="9"></line><line x1="1" y1="14" x2="4" y2="14"></line></svg>
+                    <span class="font-bold text-lg">TechStore</span>
+                </div>
+                <p class="text-sm">Tu destino premium para la tecnología más avanzada. Hardware de alto rendimiento para trabajo y juego.</p>
+            </div>
+            <div>
+                <h4 class="text-white font-bold mb-4">Compañía</h4>
+                <ul class="space-y-2 text-sm">
+                    <li><a href="/views/nosotros.html" class="hover:text-white cursor-pointer">Sobre Nosotros</a></li>
+                    <li><a href="/views/blog.html" class="hover:text-white cursor-pointer">Blog Tech</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="text-white font-bold mb-4">Soporte</h4>
+                <ul class="space-y-2 text-sm">
+                    <li><a href="/views/centro_ayuda.html" class="hover:text-white cursor-pointer">Centro de Ayuda</a></li>
+                    <li><a href="/views/devoluciones.html" class="hover:text-white cursor-pointer">Devoluciones</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="text-white font-bold mb-4">Legal</h4>
+                <ul class="space-y-2 text-sm">
+                    <li><a href="/views/terminos.html" class="hover:text-white cursor-pointer">Términos</a></li>
+                    <li><a href="/views/privacidad.html" class="hover:text-white cursor-pointer">Privacidad</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="max-w-7xl mx-auto px-4 mt-12 pt-8 border-t border-gray-800 text-center text-xs">
+            © 2024 TechStore. Todos los derechos reservados.
+        </div>
+    </footer>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // --- 1. Lógica del Buscador ---
+            const searchInput = document.getElementById('searchInput');
+            const categoryCards = document.querySelectorAll('.category-card');
+
+            searchInput.addEventListener('input', (e) => {
+                const query = e.target.value.toLowerCase();
+
+                categoryCards.forEach(card => {
+                    // Buscamos en el título, descripción y palabras clave ocultas
+                    const title = card.querySelector('h3').textContent.toLowerCase();
+                    const desc = card.querySelector('p').textContent.toLowerCase();
+                    const keywords = card.getAttribute('data-keywords') || '';
+                    
+                    if (title.includes(query) || desc.includes(query) || keywords.includes(query)) {
+                        card.style.display = 'block';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            });
+
+            // --- 2. Lógica del Acordeón (FAQ) ---
+            const faqButtons = document.querySelectorAll('.faq-btn');
+
+            faqButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const answer = button.nextElementSibling;
+                    const chevron = button.querySelector('.chevron');
+                    const isActive = answer.classList.contains('active');
+
+                    // Cerrar todos primero (comportamiento de acordeón estricto)
+                    // Si prefieres que se puedan abrir varios a la vez, comenta este bloque foreach
+                    document.querySelectorAll('.faq-answer').forEach(el => {
+                        el.classList.remove('active');
+                        // Resetear chevrons
+                        const prevBtn = el.previousElementSibling;
+                        const prevChevron = prevBtn.querySelector('.chevron');
+                        if (prevChevron) {
+                            prevChevron.classList.remove('rotate-180', 'text-indigo-600');
+                            prevChevron.classList.add('text-slate-400');
+                        }
+                    });
+
+                    // Si no estaba activo, lo activamos
+                    if (!isActive) {
+                        answer.classList.add('active');
+                        chevron.classList.add('rotate-180', 'text-indigo-600');
+                        chevron.classList.remove('text-slate-400');
+                    }
+                });
+            });
+
+        });
+    </script>
+</body>
+</html>

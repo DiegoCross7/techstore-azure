@@ -1,0 +1,1949 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TechStore | Tecnología Premium + AI Chat Avanzado</title>
+
+    <!-- Librerías Externas -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Configuración Tailwind -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: '#4F46E5', // Indigo 600
+                        secondary: '#1E293B', // Slate 800
+                        yape: '#742284',
+                        plin: '#00d3eb'
+                    },
+                    animation: {
+                        'slide-up': 'slideUp 0.3s ease-out forwards',
+                    },
+                    keyframes: {
+                        slideUp: {
+                            '0%': { transform: 'translateY(20px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom CSS & Animations */
+        body {
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.4s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hide-scroll::-webkit-scrollbar {
+            display: none;
+        }
+
+        .hide-scroll {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        /* Scrollbar para el chat */
+        .chat-scroll::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .chat-scroll::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+
+        .chat-scroll::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 3px;
+        }
+
+        .chat-scroll::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        .badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: #ef4444;
+            color: white;
+            font-size: 0.7rem;
+            font-weight: bold;
+            height: 18px;
+            width: 18px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid white;
+        }
+
+        .loader {
+            border: 3px solid #f3f3f3;
+            border-radius: 50%;
+            border-top: 3px solid #4F46E5;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        #toast-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 60;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .toast {
+            background: white;
+            padding: 16px 24px;
+            border-radius: 8px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            border-left: 4px solid #4F46E5;
+            transform: translateX(100%);
+            transition: transform 0.3s ease-out;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+
+        .carousel-slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 0.7s ease-in-out;
+            z-index: 1;
+        }
+
+        .carousel-slide.active {
+            opacity: 1;
+            z-index: 2;
+        }
+
+        /* Modal Styles */
+        .modal-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            z-index: 50;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+
+        .modal-backdrop.open {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 1rem;
+            transform: scale(0.95);
+            transition: transform 0.3s;
+        }
+
+        .modal-backdrop.open .modal-content {
+            transform: scale(1);
+        }
+
+        /* Success Animation */
+        .checkmark-circle {
+            width: 80px;
+            height: 80px;
+            position: relative;
+            display: inline-block;
+            vertical-align: top;
+            margin-bottom: 20px;
+        }
+
+        .checkmark-circle .background {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: #22c55e;
+            position: absolute;
+        }
+
+        .checkmark-circle .checkmark {
+            border-radius: 5px;
+        }
+
+        .checkmark-circle .checkmark.draw:after {
+            animation-delay: 100ms;
+            animation-duration: 1s;
+            animation-timing-function: ease;
+            animation-name: checkmark;
+            transform: scaleX(-1) rotate(135deg);
+        }
+
+        .checkmark-circle .checkmark:after {
+            opacity: 1;
+            height: 40px;
+            width: 20px;
+            transform-origin: left top;
+            border-right: 4px solid white;
+            border-top: 4px solid white;
+            content: '';
+            left: 20px;
+            top: 40px;
+            position: absolute;
+        }
+
+        /* Processing Overlay */
+        .processing-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(255, 255, 255, 0.9);
+            z-index: 70;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .processing-step {
+            opacity: 0.4;
+            transition: opacity 0.3s;
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+
+        .processing-step.active {
+            opacity: 1;
+            font-weight: bold;
+            color: #4F46E5;
+        }
+
+        /* Chat Styles */
+        .chat-bubble {
+            max-width: 80%;
+            padding: 10px 14px;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            line-height: 1.4;
+            margin-bottom: 8px;
+        }
+
+        .chat-user {
+            background-color: #4F46E5;
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 2px;
+        }
+
+        .chat-bot {
+            background-color: #F1F5F9;
+            color: #1E293B;
+            align-self: flex-start;
+            border-bottom-left-radius: 2px;
+            border: 1px solid #E2E8F0;
+        }
+
+        .typing-dot {
+            width: 6px;
+            height: 6px;
+            background-color: #94a3b8;
+            border-radius: 50%;
+            display: inline-block;
+            animation: typing 1.4s infinite ease-in-out both;
+        }
+
+        .typing-dot:nth-child(1) {
+            animation-delay: -0.32s;
+        }
+
+        .typing-dot:nth-child(2) {
+            animation-delay: -0.16s;
+        }
+
+        @keyframes typing {
+
+            0%,
+            80%,
+            100% {
+                transform: scale(0);
+            }
+
+            40% {
+                transform: scale(1);
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-slate-50 text-slate-800 flex flex-col min-h-screen font-sans">
+
+    <!-- HEADER / NAVBAR -->
+    <header class="bg-white/90 backdrop-blur-md shadow-sm sticky top-0 z-40 border-b border-slate-100">
+        <div class="container mx-auto px-4 h-20 flex items-center justify-between">
+            <a href="#" onclick="app.router('home')" class="flex items-center gap-2 group">
+                <div
+                    class="bg-primary text-white p-2 rounded-lg group-hover:rotate-12 transition-transform duration-300">
+                    <i data-lucide="cpu" size="24"></i>
+                </div>
+                <div class="flex flex-col">
+                    <span class="text-xl font-bold text-slate-900 leading-tight">TechStore</span>
+                    <span class="text-xs text-slate-500 tracking-wider font-medium">MODULAR SYSTEM</span>
+                </div>
+            </a>
+
+            <!-- Desktop Nav -->
+            <nav class="hidden md:flex items-center gap-8 font-medium text-slate-600">
+                <a href="#" onclick="app.router('home')" class="hover:text-primary transition relative py-1">Inicio</a>
+                <a href="#" onclick="app.navToSection('products')"
+                    class="hover:text-primary transition relative py-1">Productos</a>
+                <a href="#" onclick="app.navToSection('offers')"
+                    class="hover:text-primary transition relative py-1 text-red-500 font-semibold">Ofertas 🔥</a>
+                <a href="/views/nosotros.html" onclick="app.navToSection('Nosotros')"
+                    class="hover:text-primary transition relative py-1">Nosotros</a>
+                <a href="/views/ubicacion.html" class="hover:text-primary transition relative py-1">Tiendas</a>
+                <a href="/views/vip_access.html"
+                    class="hover:text-primary transition relative py-1 flex items-center gap-1">
+                    VIP <span class="text-indigo-400"></span>
+                </a>
+                <a href="/views/centro_ayuda.html" class="hover:text-primary transition relative py-1">Ayuda</a>
+                
+            </nav>
+
+            <div class="flex items-center gap-3">
+                <button onclick="app.router('wishlist')"
+                    class="relative p-2.5 hover:bg-slate-100 rounded-full transition group">
+                    <i data-lucide="heart" class="text-slate-600 group-hover:text-red-500 transition"></i>
+                    <span id="wishlist-count" class="badge hidden">0</span>
+                </button>
+                <button onclick="app.router('cart')"
+                    class="relative p-2.5 hover:bg-slate-100 rounded-full transition group ml-1">
+                    <i data-lucide="shopping-cart" class="text-slate-600 group-hover:text-primary transition"></i>
+                    <span id="cart-count" class="badge hidden">0</span>
+                </button>
+                <button class="md:hidden p-2 ml-2 text-slate-600"><i data-lucide="menu"></i></button>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT -->
+    <main id="app-root" class="flex-grow">
+        <div class="h-screen flex items-center justify-center">
+            <div class="loader"></div>
+        </div>
+    </main>
+
+    <!-- CHAT BOT INTERFACE -->
+    <!-- Chat Window -->
+    <div id="chat-window"
+        class="fixed bottom-24 right-6 z-50 w-[350px] h-[500px] bg-white rounded-2xl shadow-2xl border border-slate-200 flex flex-col hidden animate-slide-up overflow-hidden">
+        <!-- Chat Header -->
+        <div class="bg-slate-900 text-white p-4 flex justify-between items-center shadow-md">
+            <div class="flex items-center gap-3">
+                <div class="bg-primary p-1.5 rounded-lg">
+                    <i data-lucide="bot" size="20"></i>
+                </div>
+                <div>
+                    <h3 class="font-bold text-sm">TechStore AI</h3>
+                    <p class="text-xs text-slate-300 flex items-center gap-1"><span
+                            class="w-1.5 h-1.5 bg-green-400 rounded-full inline-block"></span> En línea</p>
+                </div>
+            </div>
+            <button onclick="app.chat.toggle()" class="text-slate-400 hover:text-white transition"><i data-lucide="x"
+                    size="20"></i></button>
+        </div>
+
+        <!-- Chat Messages -->
+        <div id="chat-messages" class="flex-grow bg-slate-50 p-4 overflow-y-auto chat-scroll flex flex-col gap-2">
+            <div class="chat-bubble chat-bot">
+                ¡Hola! 👋 Soy TechBot. Conozco todo el inventario, ofertas y precios. Puedo agregar productos a tu
+                carrito o lista de deseos. ¿En qué te ayudo?
+            </div>
+        </div>
+
+        <!-- Chat Input -->
+        <div class="p-3 bg-white border-t border-slate-100">
+            <form onsubmit="app.chat.send(event)" class="flex gap-2">
+                <input type="text" id="chat-input" placeholder="Ej: Agrega 2 iPhone 15 al carrito..."
+                    class="flex-grow p-2.5 bg-slate-100 border-none rounded-xl text-sm focus:ring-2 focus:ring-primary focus:bg-white transition outline-none"
+                    autocomplete="off">
+                <button type="submit" id="chat-send-btn"
+                    class="bg-primary text-white p-2.5 rounded-xl hover:bg-indigo-700 transition disabled:opacity-50 disabled:cursor-not-allowed">
+                    <i data-lucide="send" size="18"></i>
+                </button>
+            </form>
+            <div class="text-center mt-2">
+                <p class="text-[10px] text-slate-400">Powered by Google Gemini</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chat Trigger Button -->
+    <button onclick="app.chat.toggle()" id="chat-trigger-btn"
+        class="fixed bottom-6 left-auto right-6 z-40 bg-slate-900 text-white p-4 rounded-full shadow-2xl hover:bg-slate-800 transition-all duration-300 hover:scale-110 group flex items-center gap-2 overflow-hidden">
+        <i data-lucide="message-square" class="w-6 h-6 text-primary"></i>
+        <span
+            class="max-w-0 group-hover:max-w-xs transition-all duration-300 ease-in-out whitespace-nowrap text-sm font-medium">Asistente
+            Virtual</span>
+    </button>
+
+    <!-- PROCESSING OVERLAY -->
+    <div id="processing-overlay" class="processing-overlay hidden">
+        <div class="loader mb-6" style="width: 40px; height: 40px; border-width: 4px;"></div>
+        <h2 class="text-2xl font-bold text-slate-800 mb-2">Procesando Pago</h2>
+        <div class="flex flex-col items-center text-slate-500">
+            <span id="step-1" class="processing-step">Conectando con el banco...</span>
+            <span id="step-2" class="processing-step">Verificando credenciales...</span>
+            <span id="step-3" class="processing-step">Autorizando transacción...</span>
+        </div>
+    </div>
+
+    <!-- PRODUCT DETAIL MODAL -->
+    <div id="product-modal" class="modal-backdrop" onclick="if(event.target === this) app.closeProductModal()">
+        <div class="modal-content w-full max-w-4xl max-h-[90vh] overflow-y-auto m-4 relative shadow-2xl">
+            <button onclick="app.closeProductModal()"
+                class="absolute top-4 right-4 p-2 bg-slate-100 rounded-full hover:bg-slate-200 z-10">
+                <i data-lucide="x" size="20"></i>
+            </button>
+            <div id="modal-body" class="grid grid-cols-1 md:grid-cols-2 gap-0">
+                <!-- Content injected by JS -->
+            </div>
+        </div>
+    </div>
+    <div class="space-y-24 mt-24 pb-12">
+
+        <div class="relative rounded-3xl overflow-hidden bg-slate-900 shadow-2xl mx-4 lg:mx-0">
+            <div class="absolute inset-0">
+                <img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&q=80"
+                    class="w-full h-full object-cover opacity-40">
+                <div class="absolute inset-0 bg-gradient-to-r from-slate-900 via-slate-900/80 to-transparent"></div>
+            </div>
+            <div class="relative z-10 p-8 md:p-16 flex flex-col md:flex-row items-center justify-between gap-8">
+                <div class="max-w-xl text-center md:text-left">
+                    <span
+                        class="inline-block py-1 px-3 rounded-full bg-primary/20 text-primary border border-primary/30 text-xs font-bold uppercase tracking-wider mb-4">Solo
+                        en TechStore</span>
+                    <h2 class="text-3xl md:text-5xl font-bold text-white mb-6 leading-tight">Lleva tu Setup Gamer
+                        <br><span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-cyan-400">al
+                            siguiente nivel</span></h2>
+                    <p class="text-slate-300 text-lg mb-8">Descubre nuestra nueva colección de periféricos RGB,
+                        monitores de 240Hz y las tarjetas gráficas más potentes del mercado.</p>
+                    <div class="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
+                        <button onclick="app.setCategory('Consoles')"
+                            class="px-8 py-4 bg-primary hover:bg-indigo-600 text-white rounded-xl font-bold transition shadow-lg shadow-indigo-500/25">Ver
+                            Colección Gamer</button>
+                        <button
+                            onclick="document.getElementById('video-modal').classList.remove('hidden'); document.getElementById('video-modal').classList.add('flex')"
+                            class="px-8 py-4 bg-white/10 hover:bg-white/20 text-white backdrop-blur-sm rounded-xl font-bold transition flex items-center justify-center gap-2 group">
+                            <i data-lucide="play-circle" class="group-hover:scale-110 transition"></i> Ver Demo
+                        </button>
+                    </div>
+                </div>
+                <div class="hidden md:block relative animate-slide-up">
+                    <div class="absolute -inset-4 bg-primary/30 rounded-full blur-3xl"></div>
+                    <img src="https://assets.stickpng.com/images/580b57fbd9996e24bc43c0d2.png" alt="PS5 Controller"
+                        class="relative w-[300px] hover:scale-110 transition duration-500 drop-shadow-2xl rotate-12">
+                </div>
+            </div>
+        </div>
+
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col items-center mb-12 text-center">
+                <h2 class="text-3xl font-bold text-slate-900">Experiencia Tech</h2>
+                <p class="text-slate-500 mt-2">Mira lo que dicen los expertos sobre nuestros productos top</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+                <div class="relative group rounded-2xl overflow-hidden shadow-2xl cursor-pointer aspect-video bg-slate-900"
+                    onclick="document.getElementById('video-modal').classList.remove('hidden'); document.getElementById('video-modal').classList.add('flex')">
+                    <img src="https://images.unsplash.com/photo-1526925539332-aa3b66e35444?auto=format&fit=crop&q=80"
+                        class="w-full h-full object-cover opacity-80 group-hover:scale-105 transition duration-700">
+                    <div
+                        class="absolute inset-0 bg-black/30 group-hover:bg-black/40 transition flex items-center justify-center">
+                        <div
+                            class="w-20 h-20 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center group-hover:scale-110 transition duration-300">
+                            <div class="w-14 h-14 bg-white rounded-full flex items-center justify-center shadow-lg">
+                                <i data-lucide="play" class="ml-1 text-slate-900 fill-slate-900 w-6 h-6"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="absolute bottom-6 left-6 text-white">
+                        <span class="bg-red-600 px-2 py-1 rounded text-xs font-bold mb-2 inline-block">REVIEW</span>
+                        <h3 class="text-xl font-bold">iPhone 15 Pro Max: ¿Vale la pena?</h3>
+                        <p class="text-sm opacity-80">Duración: 12:45 min</p>
+                    </div>
+                </div>
+
+                <div class="space-y-8 pl-0 lg:pl-8">
+                    <div class="flex gap-4 items-start">
+                        <div class="bg-indigo-100 p-3 rounded-lg text-primary mt-1">
+                            <i data-lucide="shield-check" size="24"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-slate-900 mb-2">Garantía Asegurada</h3>
+                            <p class="text-slate-600 leading-relaxed">Todos nuestros productos pasan por un riguroso
+                                control de calidad y cuentan con garantía oficial de marca por 12 meses.</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-4 items-start">
+                        <div class="bg-indigo-100 p-3 rounded-lg text-primary mt-1">
+                            <i data-lucide="truck" size="24"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-slate-900 mb-2">Envío Flash 24h</h3>
+                            <p class="text-slate-600 leading-relaxed">¿Lo necesitas urgente? Con nuestro servicio Flash,
+                                recibe tu tecnología en la puerta de tu casa en menos de 24 horas en Lima Metropolitana.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="flex gap-4 items-start">
+                        <div class="bg-indigo-100 p-3 rounded-lg text-primary mt-1">
+                            <i data-lucide="headphones" size="24"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-slate-900 mb-2">Soporte Experto</h3>
+                            <p class="text-slate-600 leading-relaxed">Nuestro equipo de ingenieros está disponible para
+                                ayudarte a configurar tu nuevo dispositivo sin costo adicional.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white py-16 rounded-3xl border border-slate-100 shadow-sm mx-4 lg:mx-0">
+            <div class="container mx-auto px-6">
+                <div class="flex justify-between items-end mb-10">
+                    <div>
+                        <h2 class="text-3xl font-bold text-slate-900">Últimas Novedades</h2>
+                        <p class="text-slate-500 mt-2">Mantente al día con el mundo tecnológico</p>
+                    </div>
+                    <button class="text-primary font-bold hover:underline hidden sm:block">Ver todo el blog</button>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <article
+                        onclick="window.open('https://imascono.com/cual-es-el-futuro-de-la-realidad-virtual/', '_blank')"
+                        class="group cursor-pointer hover:-translate-y-2 transition-transform duration-300">
+                        <div class="rounded-xl overflow-hidden mb-4 relative aspect-[4/3]">
+                            <img src="https://images.unsplash.com/photo-1550009158-9ebf69173e03?auto=format&fit=crop&q=80"
+                                class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
+                            <div
+                                class="absolute top-4 left-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-xs font-bold text-slate-800">
+                                Tendencias</div>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-900 mb-2 group-hover:text-primary transition">El futuro
+                            de la Realidad Virtual</h3>
+                        <p class="text-slate-500 text-sm mb-4 line-clamp-2">Analizamos las nuevas gafas Vision Pro y
+                            cómo cambiarán nuestra forma de trabajar.</p>
+                        <span
+                            class="text-primary text-sm font-bold flex items-center gap-1 group-hover:gap-2 transition-all">Leer
+                            más <i data-lucide="external-link" size="14"></i></span>
+                    </article>
+
+                    <article
+                        onclick="window.open('https://www.intel.la/content/www/xl/es/gaming/resources/how-to-build-a-gaming-pc.html', '_blank')"
+                        class="group cursor-pointer hover:-translate-y-2 transition-transform duration-300">
+                        <div class="rounded-xl overflow-hidden mb-4 relative aspect-[4/3]">
+                            <img src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80"
+                                class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
+                            <div
+                                class="absolute top-4 left-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-xs font-bold text-slate-800">
+                                Guías</div>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-900 mb-2 group-hover:text-primary transition">Arma tu PC
+                            Gamer desde cero</h3>
+                        <p class="text-slate-500 text-sm mb-4 line-clamp-2">Guía paso a paso para elegir los componentes
+                            y ensamblar tu computadora soñada.</p>
+                        <span
+                            class="text-primary text-sm font-bold flex items-center gap-1 group-hover:gap-2 transition-all">Leer
+                            más <i data-lucide="external-link" size="14"></i></span>
+                    </article>
+
+                    <article
+                        onclick="window.open('https://www.asurion.com/connect/tech-tips/laptops-vs-tablets-which-is-better-for-your-student/', '_blank')"
+                        class="group cursor-pointer hover:-translate-y-2 transition-transform duration-300">
+                        <div class="rounded-xl overflow-hidden mb-4 relative aspect-[4/3]">
+                            <img src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&q=80"
+                                class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
+                            <div
+                                class="absolute top-4 left-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-xs font-bold text-slate-800">
+                                Comparativa</div>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-900 mb-2 group-hover:text-primary transition">Laptop vs
+                            Tablet para estudiar</h3>
+                        <p class="text-slate-500 text-sm mb-4 line-clamp-2">¿Cuál es la mejor opción para la universidad
+                            este 2025? Ponemos a prueba ambos dispositivos.</p>
+                        <span
+                            class="text-primary text-sm font-bold flex items-center gap-1 group-hover:gap-2 transition-all">Leer
+                            más <i data-lucide="external-link" size="14"></i></span>
+                    </article>
+                </div>
+            </div>
+        </div>
+
+        <div id="video-modal"
+            class="fixed inset-0 z-[100] bg-black/90 hidden items-center justify-center p-4 backdrop-blur-sm"
+            onclick="if(event.target === this) { this.classList.add('hidden'); this.classList.remove('flex'); var ifr = document.getElementById('promo-iframe'); var src = ifr.src; ifr.src = src; }">
+            <div
+                class="relative w-full max-w-5xl aspect-video bg-black rounded-2xl overflow-hidden shadow-2xl border border-slate-800">
+                <button
+                    onclick="document.getElementById('video-modal').classList.add('hidden'); document.getElementById('video-modal').classList.remove('flex'); var ifr = document.getElementById('promo-iframe'); var src = ifr.src; ifr.src = src;"
+                    class="absolute top-4 right-4 text-white hover:text-red-500 z-10 bg-black/50 p-2 rounded-full transition">
+                    <i data-lucide="x" size="24"></i>
+                </button>
+                <iframe id="promo-iframe" class="w-full h-full" src="https://www.youtube.com/embed/geHVfeVaOC8"
+                    title="anuncio pc gamer" frameborder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+            </div>
+        </div>
+
+    </div>
+    <div class="relative mx-4 lg:mx-0 mb-12 mt-24">
+        <div
+            class="absolute inset-0 bg-gradient-to-r from-slate-900 to-indigo-950 rounded-3xl transform -skew-y-1 shadow-2xl translate-y-2">
+        </div>
+
+        <div class="relative bg-slate-900 rounded-3xl p-8 md:p-16 overflow-hidden shadow-2xl border border-white/10">
+            <div class="absolute top-0 right-0 -mr-20 -mt-20 w-96 h-96 bg-indigo-500/20 rounded-full blur-[100px]">
+            </div>
+            <div class="absolute bottom-0 left-0 -ml-20 -mb-20 w-80 h-80 bg-purple-500/10 rounded-full blur-[80px]">
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center relative z-10">
+                <div class="space-y-8 text-center lg:text-left">
+                    <div
+                        class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-yellow-500/10 text-yellow-400 text-sm font-bold border border-yellow-500/20 backdrop-blur-md">
+                        <i data-lucide="crown" size="16"></i> Club TechStore VIP
+                    </div>
+                    <h2 class="text-4xl md:text-5xl font-bold text-white leading-tight">
+                        Acceso exclusivo a <br>
+                        <span
+                            class="text-transparent bg-clip-text bg-gradient-to-r from-yellow-200 to-yellow-500">ofertas
+                            limitadas</span>
+                    </h2>
+                    <p class="text-slate-300 text-lg leading-relaxed max-w-lg mx-auto lg:mx-0">
+                        Únete a la élite tecnológica. Recibe alertas de stock y descuentos ocultos.
+                    </p>
+                    <div
+                        class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start text-sm font-medium text-slate-400">
+                        <div class="flex items-center gap-2 bg-slate-800/50 px-4 py-2 rounded-lg border border-white/5">
+                            <i data-lucide="check-circle" class="text-yellow-500" size="16"></i> <span>Membresía
+                                Gratuita</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="relative">
+                    <div
+                        class="absolute inset-0 bg-gradient-to-tr from-yellow-500/20 to-purple-500/20 rounded-2xl blur opacity-30 transform rotate-3">
+                    </div>
+
+                    <div class="bg-white p-8 rounded-2xl shadow-2xl relative text-center">
+                        <button onclick="window.location.href='http://127.0.0.1:5500/views/vip_access.html'"
+                            class="w-full bg-slate-900 text-white py-4 rounded-xl font-bold hover:bg-indigo-600 transition shadow-lg shadow-indigo-500/20">
+                            Ir a Acceso VIP
+                        </button>
+                    </div>
+                </div>
+
+
+                </form>
+            </div>
+        </div>
+    </div>
+    </div>
+    </div>
+
+    <div id="vip-data-modal"
+        class="fixed inset-0 z-[9990] bg-black/60 hidden items-center justify-center p-4 backdrop-blur-sm transition-opacity opacity-0">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden transform scale-95 transition-transform duration-300"
+            id="vip-modal-content">
+            <div class="bg-slate-900 p-6 text-center relative overflow-hidden">
+                <div class="absolute inset-0 bg-gradient-to-r from-indigo-600 to-purple-600 opacity-20"></div>
+                <div class="relative z-10">
+                    <div
+                        class="w-16 h-16 bg-white/10 rounded-full flex items-center justify-center mx-auto mb-4 backdrop-blur-sm border border-white/20">
+                        <i data-lucide="user-plus" class="text-white" size="32"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white">Completa tu Perfil VIP</h3>
+                </div>
+            </div>
+            <div class="p-8">
+                <form onsubmit="vipSystem.startValidation(event)" class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-bold text-slate-700 mb-1">Nombre Completo</label>
+                        <input type="text" id="vip-name"
+                            class="w-full p-3 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-600 outline-none"
+                            required placeholder="Ej: Juan Pérez">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-bold text-slate-700 mb-1">Celular</label>
+                        <input type="tel" id="vip-phone"
+                            class="w-full p-3 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-600 outline-none"
+                            required placeholder="Ej: 999 000 000">
+                    </div>
+                    <div class="pt-4">
+                        <button type="submit"
+                            class="w-full bg-indigo-600 text-white py-3 rounded-lg font-bold hover:bg-indigo-700 transition shadow-lg shadow-indigo-500/30">
+                            Finalizar Registro
+                        </button>
+                        <button type="button" onclick="vipSystem.closeModal()"
+                            class="w-full mt-3 text-slate-400 text-sm hover:text-slate-600">Cancelar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div id="vip-success-popup"
+        class="fixed inset-0 z-[9999] bg-black/80 hidden items-center justify-center p-4 backdrop-blur-md transition-opacity opacity-0">
+        <div class="bg-slate-900 rounded-3xl shadow-2xl w-full max-w-md border border-yellow-500/30 overflow-hidden relative transform scale-90 transition-all duration-500"
+            id="vip-success-content">
+            <div class="absolute top-0 left-0 w-full h-full overflow-hidden">
+                <div
+                    class="absolute top-0 left-1/2 -translate-x-1/2 w-64 h-64 bg-yellow-500/20 rounded-full blur-[80px]">
+                </div>
+            </div>
+
+            <div class="relative z-10 p-10 text-center">
+                <div
+                    class="w-24 h-24 bg-gradient-to-br from-yellow-300 to-yellow-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg shadow-yellow-500/40 animate-bounce-slow">
+                    <i data-lucide="party-popper" class="text-white" size="48"></i>
+                </div>
+
+                <h2 class="text-3xl font-extrabold text-white mb-2">¡Felicidades!</h2>
+                <p class="text-yellow-400 text-lg font-medium mb-6">Te has unido al VIP</p>
+
+                <div class="bg-white/5 rounded-xl p-4 mb-8 border border-white/10">
+                    <p class="text-slate-300 text-sm">Bienvenido/a, <span id="vip-popup-name"
+                            class="text-white font-bold text-lg block mt-1">Nombre</span></p>
+                </div>
+
+                <button onclick="vipSystem.redirectToPage()"
+                    class="w-full bg-yellow-500 hover:bg-yellow-400 text-slate-900 font-bold py-3.5 rounded-xl transition shadow-lg shadow-yellow-500/20">
+                    Entrar al Club
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        @keyframes bounce-slow {
+
+            0%,
+            100% {
+                transform: translateY(-5%);
+            }
+
+            50% {
+                transform: translateY(5%);
+            }
+        }
+
+        .animate-bounce-slow {
+            animation: bounce-slow 2s infinite ease-in-out;
+        }
+    </style>
+
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <script>
+        lucide.createIcons();
+
+        const vipSystem = {
+            tempEmail: '',
+
+            toast: (msg) => {
+                if (typeof app !== 'undefined' && app.toast) {
+                    app.toast(msg, "info");
+                } else {
+                    console.log("VIP System:", msg);
+                }
+            },
+
+            openDataModal: (e) => {
+                e.preventDefault();
+                const email = document.getElementById('vip-initial-email').value;
+                if (!email) return;
+
+                vipSystem.tempEmail = email;
+                const modal = document.getElementById('vip-data-modal');
+                const content = document.getElementById('vip-modal-content');
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+
+                setTimeout(() => {
+                    modal.classList.remove('opacity-0');
+                    content.classList.remove('scale-95');
+                    content.classList.add('scale-100');
+                }, 50);
+            },
+
+            closeModal: () => {
+                const modal = document.getElementById('vip-data-modal');
+                const content = document.getElementById('vip-modal-content');
+
+                modal.classList.add('opacity-0');
+                content.classList.remove('scale-100');
+                content.classList.add('scale-95');
+
+                setTimeout(() => {
+                    modal.classList.add('hidden');
+                    modal.classList.remove('flex');
+                }, 300);
+            },
+
+            startValidation: (e) => {
+                e.preventDefault();
+                const name = document.getElementById('vip-name').value;
+
+                vipSystem.closeModal();
+                vipSystem.toast("Perfil enviado. Validando (10s)...");
+
+                // Espera de 10 segundos
+                setTimeout(() => {
+                    vipSystem.showSuccess(name);
+                }, 10000);
+            },
+
+            showSuccess: (name) => {
+                const popup = document.getElementById('vip-success-popup');
+                const content = document.getElementById('vip-success-content');
+
+                document.getElementById('vip-popup-name').innerText = name;
+
+                const audio = new Audio('https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3');
+                audio.volume = 0.5;
+                audio.play().catch(() => { });
+
+                popup.classList.remove('hidden');
+                popup.classList.add('flex');
+
+                setTimeout(() => {
+                    popup.classList.remove('opacity-0');
+                    content.classList.remove('scale-90');
+                    content.classList.add('scale-100');
+                    lucide.createIcons();
+                }, 50);
+            },
+
+            closeSuccessPopup: () => {
+                const popup = document.getElementById('vip-success-popup');
+                const content = document.getElementById('vip-success-content');
+
+                popup.classList.add('opacity-0');
+                content.classList.remove('scale-100');
+                content.classList.add('scale-90');
+
+                setTimeout(() => {
+                    popup.classList.add('hidden');
+                    popup.classList.remove('flex');
+                }, 300);
+            },
+
+            // --- FUNCIÓN DE REDIRECCIÓN CORREGIDA ---
+            redirectToPage: () => {
+                console.log("Redirigiendo...");
+
+                // 1. Ocultamos el popup visualmente
+                const popup = document.getElementById('vip-success-popup');
+                popup.classList.add('opacity-0');
+
+                // 2. Ejecutamos la redirección
+                setTimeout(() => {
+                    // IMPORTANTE: Asegúrate de que la extensión sea .html
+                    window.location.href = 'views/vip_access.html';
+                }, 300);
+            }
+        };
+    </script>
+    <!-- FOOTER -->
+    <footer class="bg-slate-900 text-slate-300 py-12 border-t border-slate-800">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+                <div class="col-span-1 md:col-span-1">
+                    <div class="flex items-center gap-2 mb-4 text-white">
+                        <i data-lucide="cpu"></i>
+                        <span class="text-xl font-bold">TechStore</span>
+                    </div>
+                    <p class="text-sm text-slate-400 leading-relaxed">Tu destino premium para la tecnología más
+                        avanzada.</p>
+                </div>
+
+                <div>
+                    <h3 class="text-white font-semibold mb-4">Compañía</h3>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="/views/nosotros.html" class="hover:text-white transition-colors">Sobre Nosotros</a></li>
+                        <li><a href="/views/blog.html" class="hover:text-white transition-colors">Blog Tech</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="text-white font-semibold mb-4">Soporte</h3>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="/views/centro_ayuda.html" class="hover:text-white transition-colors">Centro de Ayuda</a></li>
+                        <li><a href="/views/devoluciones.html" class="hover:text-white transition-colors">Devoluciones</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="text-white font-semibold mb-4">Legal</h3>
+                    <ul class="space-y-2 text-sm mb-6">
+                        <li><a href="/views/terminos.html" class="hover:text-white transition-colors">Términos</a></li>
+                        <li><a href="/views/privacidad.html" class="hover:text-white transition-colors">Privacidad</a></li>
+                    </ul>
+                    <div>
+                        <a href="/views/libro.html"
+                            class="inline-flex items-center gap-3 p-2 rounded-lg border border-slate-700 bg-slate-800/50 hover:bg-slate-800 hover:border-slate-600 transition-all group">
+                            <img src="https://www.charbroildelperu.com/img/librodereclamaciones.jpg"
+                                alt="Libro de Reclamaciones"
+                                class="w-8 h-8 rounded object-cover opacity-90 group-hover:opacity-100">
+                            <div class="flex flex-col">
+                                <span class="text-[10px] uppercase text-slate-400">Libro de</span>
+                                <span
+                                    class="text-xs font-bold text-slate-200 group-hover:text-white">Reclamaciones</span>
+                            </div>
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+            <div class="border-t border-slate-800 pt-8 flex justify-between text-sm text-slate-500">
+                <p>© 2024 TechStore.</p>
+            </div>
+        </div>
+    </footer>
+
+    <div id="toast-container"></div>
+
+    <!-- TEMPLATES -->
+
+    <!-- HOME -->
+    <template id="view-home">
+        <div class="fade-in">
+            <div id="hero-carousel" class="relative bg-slate-900 text-white overflow-hidden h-[500px] md:h-[600px]">
+                <div id="carousel-slides" class="w-full h-full"></div>
+                <button onclick="app.prevSlide()"
+                    class="absolute top-1/2 left-4 transform -translate-y-1/2 bg-white/10 hover:bg-white/20 p-3 rounded-full z-20"><i
+                        data-lucide="chevron-left"></i></button>
+                <button onclick="app.nextSlide()"
+                    class="absolute top-1/2 right-4 transform -translate-y-1/2 bg-white/10 hover:bg-white/20 p-3 rounded-full z-20"><i
+                        data-lucide="chevron-right"></i></button>
+                <div id="carousel-dots" class="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex gap-2 z-20">
+                </div>
+            </div>
+
+            <div class="container mx-auto px-4 -mt-8 relative z-20 mb-12">
+                <div id="category-filters"
+                    class="bg-white rounded-xl shadow-xl p-4 flex gap-4 overflow-x-auto hide-scroll border border-slate-100 items-center">
+                </div>
+            </div>
+
+            <div class="container mx-auto px-4 py-8 mb-12">
+                <div class="flex justify-between items-end mb-8">
+                    <div>
+                        <h2 class="text-3xl font-bold text-slate-900" id="section-title">Destacados</h2>
+                        <p class="text-slate-500 mt-2" id="section-subtitle">Lo mejor en tecnología</p>
+                    </div>
+                </div>
+
+                <div id="products-loader" class="hidden py-20 flex justify-center">
+                    <div class="loader"></div>
+                </div>
+                <div id="products-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8"></div>
+                <div id="products-empty" class="hidden py-20 text-center text-slate-500">No se encontraron productos en
+                    esta categoría.</div>
+
+                <div class="mt-16 flex justify-center">
+                    <nav id="pagination-controls" class="inline-flex shadow-sm rounded-md gap-1"></nav>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <!-- CART -->
+    <template id="view-cart">
+        <div class="fade-in container mx-auto px-4 py-8 max-w-5xl">
+            <h1 class="text-3xl font-bold mb-8 text-slate-900">Tu Carrito</h1>
+            <div id="cart-content" class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <div class="lg:col-span-2 space-y-4" id="cart-items-container"></div>
+                <div class="lg:col-span-1">
+                    <div class="bg-white rounded-2xl shadow-lg border border-slate-100 p-6 sticky top-24">
+                        <h2 class="text-lg font-bold mb-4 text-slate-800">Resumen</h2>
+                        <div class="space-y-3 text-sm text-slate-600 mb-6 pb-6 border-b border-slate-100">
+                            <div class="flex justify-between"><span>Subtotal</span> <span
+                                    id="cart-subtotal">$0.00</span></div>
+                            <div class="flex justify-between"><span>Envío</span> <span
+                                    class="text-green-600 font-medium">Gratis</span></div>
+                            <div class="flex justify-between"><span>IGV (18%)</span> <span id="cart-tax">$0.00</span>
+                            </div>
+                        </div>
+                        <div class="flex justify-between font-bold text-xl mb-6 text-slate-900"><span>Total</span> <span
+                                id="cart-total">$0.00</span></div>
+                        <button onclick="app.router('checkout')"
+                            class="w-full bg-primary text-white py-4 rounded-xl font-bold hover:bg-indigo-700 transition shadow-lg shadow-indigo-500/30 flex justify-center items-center gap-2">
+                            Pagar Ahora <i data-lucide="credit-card" size="18"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div id="cart-empty" class="hidden flex flex-col items-center justify-center py-20 text-center">
+                <div class="bg-slate-100 p-6 rounded-full mb-6"><i data-lucide="shopping-cart" class="text-slate-400"
+                        size="48"></i></div>
+                <h3 class="text-xl font-bold text-slate-800 mb-2">Carrito vacío</h3>
+                <button onclick="app.router('home')" class="bg-primary text-white px-8 py-3 rounded-lg mt-4">Ir a la
+                    Tienda</button>
+            </div>
+        </div>
+    </template>
+
+    <!-- CHECKOUT -->
+    <template id="view-checkout">
+        <div class="fade-in container mx-auto px-4 py-8 max-w-4xl">
+            <button onclick="app.router('cart')" class="flex items-center gap-2 text-slate-500 hover:text-primary mb-6">
+                <i data-lucide="arrow-left" size="16"></i> Volver al carrito
+            </button>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="md:col-span-2 space-y-6">
+                    <h1 class="text-2xl font-bold text-slate-900">Método de Pago</h1>
+
+                    <div class="bg-white rounded-xl border border-slate-200 overflow-hidden">
+                        <div class="flex border-b border-slate-100">
+                            <button onclick="app.setPaymentMethod('card')" id="btn-method-card"
+                                class="flex-1 py-4 font-medium text-center border-b-2 border-primary text-primary bg-indigo-50 transition">Tarjeta</button>
+                            <button onclick="app.setPaymentMethod('yape')" id="btn-method-yape"
+                                class="flex-1 py-4 font-medium text-center border-b-2 border-transparent text-slate-500 hover:bg-slate-50 transition">Yape
+                                / Plin</button>
+                        </div>
+
+                        <div class="p-6">
+                            <!-- Card Form -->
+                            <div id="payment-card" class="space-y-4">
+                                <div class="flex gap-2 mb-4 items-center">
+                                    <div class="bg-slate-100 rounded px-2 py-1"><i data-lucide="credit-card"
+                                            class="text-slate-500"></i></div>
+                                    <div id="card-logo-visa"
+                                        class="opacity-30 grayscale transition bg-slate-100 rounded px-2 py-1 text-xs font-bold text-blue-600">
+                                        VISA</div>
+                                    <div id="card-logo-mc"
+                                        class="opacity-30 grayscale transition bg-slate-100 rounded px-2 py-1 text-xs font-bold text-red-500">
+                                        Mastercard</div>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-700 mb-1">Número de
+                                        Tarjeta</label>
+                                    <div class="relative">
+                                        <input type="text" id="card-number" placeholder="0000 0000 0000 0000"
+                                            maxlength="19" oninput="app.formatCardNumber(this)"
+                                            class="w-full p-3 pl-10 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary outline-none font-mono">
+                                        <i data-lucide="credit-card"
+                                            class="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-5 h-5"></i>
+                                    </div>
+                                </div>
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-sm font-medium text-slate-700 mb-1">Expiración</label>
+                                        <input type="text" id="card-expiry" placeholder="MM/YY" maxlength="5"
+                                            oninput="app.formatExpiry(this)"
+                                            class="w-full p-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary outline-none text-center font-mono">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-slate-700 mb-1">CVV</label>
+                                        <div class="relative">
+                                            <input type="password" id="card-cvv" placeholder="123" maxlength="3"
+                                                class="w-full p-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary outline-none text-center font-mono">
+                                            <i data-lucide="lock"
+                                                class="absolute right-3 top-1/2 transform -translate-y-1/2 text-slate-300 w-4 h-4"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-700 mb-1">Titular</label>
+                                    <input type="text" id="card-name" placeholder="Como aparece en la tarjeta"
+                                        class="w-full p-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary outline-none uppercase">
+                                </div>
+                            </div>
+
+                            <!-- Yape/Plin Form -->
+                            <div id="payment-yape" class="hidden space-y-6 text-center">
+                                <div class="flex justify-center gap-4 mb-4">
+                                    <div class="bg-[#742284] text-white px-4 py-2 rounded-lg font-bold shadow-sm">Yape
+                                    </div>
+                                    <div class="bg-[#00d3eb] text-white px-4 py-2 rounded-lg font-bold shadow-sm">Plin
+                                    </div>
+                                </div>
+                                <div class="bg-slate-50 p-4 rounded-xl inline-block border border-slate-200 relative">
+                                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=SimulacionPagoTechStore"
+                                        alt="QR Pago" class="mix-blend-multiply">
+                                    <div class="mt-2 text-xs font-mono text-red-500 font-bold animate-pulse">Expira en:
+                                        <span id="qr-timer">05:00</span></div>
+                                </div>
+                                <div>
+                                    <p class="text-sm text-slate-500 mb-1">Escanea o envía al número:</p>
+                                    <p class="text-xl font-bold text-slate-800 tracking-wider">987 654 321</p>
+                                    <p class="text-xs text-slate-400 mt-2">Titular: TechStore SAC</p>
+                                </div>
+                                <div class="text-left bg-yellow-50 p-3 rounded-lg border border-yellow-100">
+                                    <label
+                                        class="block text-xs font-bold text-yellow-700 mb-1 uppercase">Confirmación</label>
+                                    <input type="text" id="payment-code"
+                                        placeholder="Ingresa el código de operación / celular"
+                                        class="w-full p-2 bg-white border border-yellow-200 rounded focus:ring-2 focus:ring-yellow-400 outline-none text-sm">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="md:col-span-1">
+                    <div class="bg-slate-50 rounded-xl p-6 border border-slate-200 sticky top-24">
+                        <h3 class="font-bold text-slate-800 mb-4">Total a Pagar</h3>
+                        <div class="text-3xl font-bold text-primary mb-6" id="checkout-total">$0.00</div>
+                        <button onclick="app.processPayment()"
+                            class="w-full bg-green-600 text-white py-3 rounded-lg font-bold hover:bg-green-700 transition shadow-lg shadow-green-500/30 flex justify-center items-center gap-2">
+                            <i data-lucide="lock" size="18"></i> Confirmar Pago
+                        </button>
+                        <div class="mt-4 flex flex-col gap-2 text-xs text-slate-400 text-center">
+                            <p>Tus datos están protegidos con encriptación SSL de 256-bits.</p>
+                            <div class="flex justify-center gap-2 opacity-50">
+                                <i data-lucide="shield-check"></i>
+                                <i data-lucide="lock"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <!-- SUCCESS PAGE -->
+    <template id="view-success">
+        <div class="fade-in min-h-[80vh] flex flex-col items-center justify-center p-4 text-center">
+            <div class="checkmark-circle">
+                <div class="background"></div>
+                <div class="checkmark draw"></div>
+            </div>
+            <h1 class="text-3xl font-bold text-slate-900 mb-2">¡Pago Exitoso!</h1>
+            <p class="text-slate-500 mb-8">Gracias por tu compra. Hemos enviado el recibo a tu correo.</p>
+
+            <div class="bg-white p-6 rounded-xl shadow-lg border border-slate-100 w-full max-w-md text-left mb-8">
+                <div class="flex justify-between items-center mb-4 pb-4 border-b border-slate-100">
+                    <span class="text-slate-500 text-sm">Orden #</span>
+                    <span class="font-mono font-bold text-slate-800" id="success-order-id">ORD-0000</span>
+                </div>
+                <div class="flex justify-between items-center mb-4 pb-4 border-b border-slate-100">
+                    <span class="text-slate-500 text-sm">Fecha</span>
+                    <span class="text-slate-800 text-sm" id="success-date">--/--/--</span>
+                </div>
+                <div class="flex justify-between items-center">
+                    <span class="font-bold text-slate-800">Total Pagado</span>
+                    <span class="font-bold text-primary text-xl" id="success-total">$0.00</span>
+                </div>
+            </div>
+
+            <button onclick="app.router('home')"
+                class="bg-primary text-white px-8 py-3 rounded-lg font-bold hover:bg-indigo-700 transition shadow-lg shadow-indigo-500/30">
+                Seguir Comprando
+            </button>
+        </div>
+    </template>
+
+    <!-- WISHLIST -->
+    <template id="view-wishlist">
+        <div class="fade-in container mx-auto px-4 py-8 max-w-6xl">
+            <h1 class="text-3xl font-bold mb-2 text-slate-900">Lista de Deseos</h1>
+            <div id="wishlist-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-8"></div>
+            <div id="wishlist-empty" class="hidden flex flex-col items-center justify-center py-20 text-center">
+                <div class="bg-red-50 p-6 rounded-full mb-6"><i data-lucide="heart" class="text-red-300" size="48"></i>
+                </div>
+                <h3 class="text-xl font-bold text-slate-800">Sin favoritos</h3>
+                <button onclick="app.router('home')" class="mt-4 text-primary font-medium hover:underline">Explorar
+                    Productos</button>
+            </div>
+        </div>
+    </template>
+
+    <!-- JS LOGIC -->
+    <script>
+        // CONFIG & DATA
+        const API_BASE_URL = 'https://dummyjson.com';
+        // AVISO DE SEGURIDAD: En un entorno real, esta clave debe estar en el backend.
+        const GEMINI_API_KEY = "AIzaSyC8HrKl4Xldl2IPnOyNO3WTHG2RTW1KyP8";
+
+        const TECH_CATEGORIES = ['Smartphones', 'Laptops', 'Tv/Audio', 'Tablets', 'Consoles', 'Smartwatches', 'Cameras', 'Drones', 'Accessories'];
+
+        // INVENTARIO MANUAL EXPANDIDO (Para cubrir lo que la API no trae)
+        const MOCK_INVENTORY = [
+            // SMARTPHONES
+            { id: 101, title: "iPhone 15 Pro Max", price: 1199.00, category: "Smartphones", rating: 4.9, thumbnail: "https://images.unsplash.com/photo-1696446701796-da61225697cc?auto=format&fit=crop&w=600&q=80", description: "El iPhone definitivo con diseño de titanio y chip A17 Pro.", images: ["https://images.unsplash.com/photo-1696446701796-da61225697cc?auto=format&fit=crop&w=600&q=80"] },
+            { id: 102, title: "Samsung Galaxy S24 Ultra", price: 1299.00, category: "Smartphones", rating: 4.8, thumbnail: "https://images.unsplash.com/photo-1610945415295-d9bbf067e59c?auto=format&fit=crop&w=600&q=80", description: "La experiencia Galaxy definitiva con IA integrada y S Pen.", images: ["https://images.unsplash.com/photo-1610945415295-d9bbf067e59c?auto=format&fit=crop&w=600&q=80"] },
+            { id: 103, title: "Google Pixel 8 Pro", price: 999.00, category: "Smartphones", rating: 4.7, thumbnail: "https://images.unsplash.com/photo-1598327105666-5b89351aff70?auto=format&fit=crop&w=600&q=80", description: "El teléfono totalmente diseñado por Google con la mejor cámara Android.", images: ["https://images.unsplash.com/photo-1598327105666-5b89351aff70?auto=format&fit=crop&w=600&q=80"] },
+            { id: 104, title: "Xiaomi 13 Ultra", price: 899.00, category: "Smartphones", rating: 4.6, thumbnail: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=600&q=80", description: "Óptica Leica profesional en la palma de tu mano.", images: ["https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=600&q=80"] },
+
+            // Tv/Audio
+            { id: 2001, title: "Samsung QLED 4K 65\"", price: 1099.00, category: "Tv/Audio", rating: 4.8, thumbnail: "https://images.unsplash.com/photo-1593784991095-a20506948430?auto=format&fit=crop&w=600&q=80", description: "Smart TV con colores vibrantes y procesador Quantum 4K.", images: ["https://images.unsplash.com/photo-1593784991095-a20506948430?auto=format&fit=crop&w=600&q=80"] },
+            { id: 2002, title: "Sony Bravia XR 55\"", price: 899.00, category: "Tv/Audio", rating: 4.7, thumbnail: "https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?auto=format&fit=crop&w=600&q=80", description: "TV Inteligente con procesador cognitivo XR y Google TV.", images: ["https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?auto=format&fit=crop&w=600&q=80"] },
+            { id: 2003, title: "LG Soundbar SN7Y", price: 349.00, category: "Tv/Audio", rating: 4.5, thumbnail: "https://images.unsplash.com/photo-1545454675-3531b543be5d?auto=format&fit=crop&w=600&q=80", description: "Barra de sonido de alta fidelidad con subwoofer inalámbrico.", images: ["https://images.unsplash.com/photo-1545454675-3531b543be5d?auto=format&fit=crop&w=600&q=80"] },
+
+            // Consoles
+            { id: 3001, title: "Sony PlayStation 5", price: 499.00, category: "Consoles", rating: 4.9, thumbnail: "https://images.unsplash.com/photo-1606144042614-b2417e99c4e3?auto=format&fit=crop&w=600&q=80", description: "La consola de última generación de Sony con gráficos 4K.", images: ["https://images.unsplash.com/photo-1606144042614-b2417e99c4e3?auto=format&fit=crop&w=600&q=80"] },
+            { id: 3002, title: "Xbox Series X", price: 499.00, category: "Consoles", rating: 4.8, thumbnail: "https://images.unsplash.com/photo-1621259182978-fbf93132d53d?auto=format&fit=crop&w=600&q=80", description: "La consola Xbox más rápida y potente de la historia.", images: ["https://images.unsplash.com/photo-1621259182978-fbf93132d53d?auto=format&fit=crop&w=600&q=80"] },
+            { id: 3003, title: "Nintendo Switch OLED", price: 349.00, category: "Consoles", rating: 4.7, thumbnail: "https://images.unsplash.com/photo-1612036782180-6f0b6cd846fe?auto=format&fit=crop&w=600&q=80", description: "Consola híbrida con pantalla OLED de 7 pulgadas.", images: ["https://images.unsplash.com/photo-1612036782180-6f0b6cd846fe?auto=format&fit=crop&w=600&q=80"] },
+
+            // Cameras
+            { id: 4001, title: "Sony Alpha a7 III", price: 1999.00, category: "Cameras", rating: 4.9, thumbnail: "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=600&q=80", description: "Cámara Mirrorless Full Frame con enfoque automático rápido.", images: ["https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=600&q=80"] },
+            { id: 4002, title: "Canon EOS R5", price: 3899.00, category: "Cameras", rating: 4.9, thumbnail: "https://images.unsplash.com/photo-1502920917128-1aa500764cbd?auto=format&fit=crop&w=600&q=80", description: "Cámara profesional para fotografía y video 8K.", images: ["https://images.unsplash.com/photo-1502920917128-1aa500764cbd?auto=format&fit=crop&w=600&q=80"] },
+            { id: 4003, title: "GoPro HERO11", price: 399.00, category: "Cameras", rating: 4.6, thumbnail: "https://images.unsplash.com/photo-1565849904461-04a58ad377e0?auto=format&fit=crop&w=600&q=80", description: "Cámara de acción resistente al agua con video 5.3K.", images: ["https://images.unsplash.com/photo-1565849904461-04a58ad377e0?auto=format&fit=crop&w=600&q=80"] },
+
+            // Drones
+            { id: 5001, title: "DJI Mini 3 Pro", price: 759.00, category: "Drones", rating: 4.9, thumbnail: "https://images.unsplash.com/photo-1579829366248-204fe8413f31?auto=format&fit=crop&w=600&q=80", description: "Dron ligero y plegable con video 4K/60fps.", images: ["https://images.unsplash.com/photo-1579829366248-204fe8413f31?auto=format&fit=crop&w=600&q=80"] },
+            { id: 5002, title: "DJI Mavic 3", price: 2049.00, category: "Drones", rating: 4.9, thumbnail: "https://images.unsplash.com/photo-1506947411487-a56738267384?auto=format&fit=crop&w=600&q=80", description: "Dron insignia con cámara Hasselblad y vuelo de 46 min.", images: ["https://images.unsplash.com/photo-1506947411487-a56738267384?auto=format&fit=crop&w=600&q=80"] },
+
+            // Accessories Extra (Headphones etc)
+            { id: 6001, title: "Sony WH-1000XM5", price: 349.00, category: "Accessories", rating: 4.8, thumbnail: "https://images.unsplash.com/photo-1618366712010-f4ae9c647dcb?auto=format&fit=crop&w=600&q=80", description: "Audífonos con cancelación de ruido líder en la industria.", images: ["https://images.unsplash.com/photo-1618366712010-f4ae9c647dcb?auto=format&fit=crop&w=600&q=80"] }
+        ];
+
+        const CONFIG = {
+            HERO_SLIDES: [
+                { id: 1, image: 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&q=80', title: 'Nuevos Smartphones', subtitle: 'Tecnología móvil de última generación.' },
+                { id: 2, image: 'https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?auto=format&fit=crop&q=80', title: 'Experiencia Cine en Casa', subtitle: 'Televisores 4K y sistemas de sonido inmersivos.' },
+                { id: 3, image: 'https://images.unsplash.com/photo-1531297420494-856f4bbd4ea9?auto=format&fit=crop&q=80', title: 'Gaming y Computación', subtitle: 'Equipos de alto rendimiento para trabajo y juego.' }
+            ]
+        };
+
+        const app = {
+            state: {
+                products: [],
+                cart: JSON.parse(localStorage.getItem('techstore_cart')) || [],
+                wishlist: JSON.parse(localStorage.getItem('techstore_wishlist')) || [],
+                currentView: 'home',
+                currentPage: 1, itemsPerPage: 8,
+                currentCategory: 'destacados',
+                currentSlide: 0, slideInterval: null,
+                paymentMethod: 'card',
+                lastOrder: null,
+                qrInterval: null,
+                isChatOpen: false,
+                chatHistory: [] // MEMORIA DE CONVERSACIÓN
+            },
+
+            init: async () => {
+                app.router('home');
+                app.updateBadges();
+                document.getElementById('products-loader')?.classList.remove('hidden');
+
+                try {
+                    const response = await fetch(`${API_BASE_URL}/products?limit=100`);
+                    const data = await response.json();
+
+                    const apiProducts = data.products.map(p => {
+                        let mappedCat = null;
+                        if (p.category === 'smartphones') mappedCat = 'Smartphones';
+                        else if (p.category === 'laptops') mappedCat = 'Laptops';
+                        else if (p.category === 'tablets') mappedCat = 'Tablets';
+                        else if (p.category === 'mobile-accessories') mappedCat = 'Accessories';
+                        else if (p.category.includes('watch')) mappedCat = 'Smartwatches';
+                        else if (p.category === 'sunglasses') mappedCat = 'Accessories';
+
+                        return mappedCat ? { ...p, category: mappedCat } : null;
+                    }).filter(Boolean);
+
+                    app.state.products = [...MOCK_INVENTORY, ...apiProducts];
+
+                    if (app.state.currentView === 'home') app.renderHome();
+                } catch (error) {
+                    console.error("Error fetching API, using fallback data", error);
+                    app.state.products = MOCK_INVENTORY;
+                    app.renderHome();
+                } finally {
+                    document.getElementById('products-loader')?.classList.add('hidden');
+                }
+                lucide.createIcons();
+            },
+
+            router: (viewName) => {
+                app.state.currentView = viewName;
+                const root = document.getElementById('app-root');
+                const template = document.getElementById(`view-${viewName}`);
+                if (!template) return;
+
+                if (app.state.slideInterval) clearInterval(app.state.slideInterval);
+                if (app.state.qrInterval) clearInterval(app.state.qrInterval);
+
+                root.innerHTML = '';
+                root.appendChild(template.content.cloneNode(true));
+                window.scrollTo(0, 0);
+                lucide.createIcons();
+
+                if (viewName === 'home') app.state.products.length > 0 ? app.renderHome() : null;
+                else if (viewName === 'cart') app.renderCartItems();
+                else if (viewName === 'wishlist') app.renderWishlistItems();
+                else if (viewName === 'checkout') app.renderCheckout();
+                else if (viewName === 'success') app.renderSuccess();
+            },
+
+            navToSection: (section) => {
+                if (app.state.currentView !== 'home') app.router('home');
+                setTimeout(() => {
+                    if (section === 'offers') app.setCategory('ofertas');
+                    else app.setCategory('destacados');
+                    document.getElementById('category-filters').scrollIntoView({ behavior: 'smooth' });
+                }, 100);
+            },
+
+            // --- CHATBOT LOGIC AVANZADO CON MEMORIA ---
+            chat: {
+                toggle: () => {
+                    const chatWindow = document.getElementById('chat-window');
+                    app.state.isChatOpen = !app.state.isChatOpen;
+                    if (app.state.isChatOpen) {
+                        chatWindow.classList.remove('hidden');
+                        document.getElementById('chat-input').focus();
+                    } else {
+                        chatWindow.classList.add('hidden');
+                    }
+                },
+
+                appendMessage: (role, text) => {
+                    const container = document.getElementById('chat-messages');
+                    const bubble = document.createElement('div');
+                    bubble.className = `chat-bubble ${role === 'user' ? 'chat-user' : 'chat-bot'} fade-in`;
+                    bubble.innerHTML = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+                    container.appendChild(bubble);
+                    container.scrollTop = container.scrollHeight;
+                },
+
+                showTyping: () => {
+                    const container = document.getElementById('chat-messages');
+                    const bubble = document.createElement('div');
+                    bubble.id = 'chat-typing-indicator';
+                    bubble.className = 'chat-bubble chat-bot fade-in';
+                    bubble.innerHTML = '<div class="flex gap-1"><span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span></div>';
+                    container.appendChild(bubble);
+                    container.scrollTop = container.scrollHeight;
+                },
+
+                removeTyping: () => {
+                    const indicator = document.getElementById('chat-typing-indicator');
+                    if (indicator) indicator.remove();
+                },
+
+                // Genera un contexto "ligero" del inventario para la IA
+                getInventoryContext: () => {
+                    return app.state.products.map(p =>
+                        `{id:${p.id}, nombre:"${p.title}", precio:$${p.price}, desc:${Math.round(p.discountPercentage || 0)}%, cat:"${p.category}"}`
+                    ).join(", ");
+                },
+
+                executeCommand: (cmdString) => {
+                    try {
+                        const cmd = JSON.parse(cmdString);
+                        console.log("Ejecutando comando AI:", cmd);
+
+                        if (cmd.action === "add_cart") {
+                            app.addToCart(cmd.id, cmd.qty || 1);
+                            return true;
+                        }
+                        if (cmd.action === "add_wishlist") {
+                            // Verifica si ya está para no quitarlo
+                            if (!app.state.wishlist.includes(cmd.id)) {
+                                app.toggleWishlist(cmd.id);
+                                app.toast("Agregado a lista de deseos");
+                            } else {
+                                app.toast("Ya está en tu lista de deseos");
+                            }
+                            return true;
+                        }
+                        if (cmd.action === "view_product") {
+                            app.openProductModal(cmd.id);
+                            return true;
+                        }
+                        return false;
+
+                    } catch (e) {
+                        console.error("Error ejecutando comando bot:", e);
+                        return false;
+                    }
+                },
+
+                send: async (e) => {
+                    e.preventDefault();
+                    const input = document.getElementById('chat-input');
+                    const text = input.value.trim();
+                    if (!text) return;
+
+                    // 1. UI: Mostrar mensaje del usuario
+                    app.chat.appendMessage('user', text);
+                    input.value = '';
+                    app.chat.showTyping();
+
+                    // 2. MEMORIA: Guardar en historial
+                    app.state.chatHistory.push({
+                        role: "user",
+                        parts: [{ text: text }]
+                    });
+
+                    // 3. CONTEXTO: Sistema e Inventario
+                    const inventory = app.chat.getInventoryContext();
+                    const systemPrompt = `
+                    Eres TechBot, el asistente de ventas experto de TechStore.
+                    
+                    TU INVENTARIO ACTUAL: [${inventory}]
+
+                    REGLAS DE MEMORIA:
+                    1. Recuerda siempre lo que le has sugerido al cliente en los turnos anteriores.
+                    2. Si el cliente dice "agrega eso", "los que sugeriste" o "dame los 3", revisa tu historial de respuestas para saber a qué productos se refiere.
+
+                    REGLAS DE ACCIÓN:
+                    1. Responde de forma natural, breve y amable en español.
+                    2. Si el usuario quiere comprar algo, ver un producto o agregarlo a deseos, RESPONDE CON TEXTO Y LUEGO AGREGA UN COMANDO OCULTO al final.
+                    3. Formato del comando oculto: ||{"action": "TIPO", "id": ID_PRODUCTO, "qty": CANTIDAD}||
+                       - Tipos de acción: "add_cart", "add_wishlist", "view_product".
+                    4. Ejemplo: Si el usuario dice "quiero dos iphone 15", tu dices: "¡Claro! Agrego 2 iPhone 15 Pro Max a tu carrito. ||{"action":"add_cart","id":101,"qty":2}||"
+                    5. Si preguntan por ofertas, busca productos con descuento > 0 en el inventario provisto y lístalos.
+                    6. IMPORTANTE: Si el usuario pide múltiples productos (ej: "agrega los 3"), genera un comando oculto POR CADA producto. Ejemplo: ... texto ... ||{...}|| ||{...}|| ||{...}||
+                    `;
+
+                    try {
+                        // Construimos el historial completo para enviar a la API
+                        // Ponemos el systemPrompt como el primer mensaje del usuario para dar contexto
+                        const apiContents = [
+                            {
+                                role: "user",
+                                parts: [{ text: systemPrompt }]
+                            },
+                            {
+                                role: "model",
+                                parts: [{ text: "Entendido. Soy TechBot, conozco el inventario y tengo memoria de esta conversación." }]
+                            },
+                            ...app.state.chatHistory
+                        ];
+
+                        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${GEMINI_API_KEY}`;
+
+                        const response = await fetch(url, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                contents: apiContents
+                            })
+                        });
+
+                        const data = await response.json();
+                        app.chat.removeTyping();
+
+                        if (data.candidates && data.candidates[0].content) {
+                            let rawText = data.candidates[0].content.parts[0].text;
+
+                            // 4. MEMORIA: Guardar respuesta de la IA (incluyendo comandos ocultos)
+                            app.state.chatHistory.push({
+                                role: "model",
+                                parts: [{ text: rawText }]
+                            });
+
+                            // 5. PROCESAMIENTO: Buscar y ejecutar comandos
+                            let visibleText = rawText;
+                            const cmdRegex = /\|\|(.*?)\|\|/g;
+                            let match;
+
+                            // Ejecutar TODOS los comandos encontrados (útil para "agrega los 3")
+                            while ((match = cmdRegex.exec(rawText)) !== null) {
+                                app.chat.executeCommand(match[1]);
+                            }
+
+                            // Limpiar texto para UI
+                            visibleText = rawText.replace(cmdRegex, '').trim();
+
+                            app.chat.appendMessage('bot', visibleText);
+                        } else {
+                            app.chat.appendMessage('bot', "Lo siento, tuve un problema procesando eso. ¿Podrías intentar de nuevo?");
+                        }
+                    } catch (error) {
+                        console.error(error);
+                        app.chat.removeTyping();
+                        app.chat.appendMessage('bot', "Error de conexión. Por favor verifica tu internet.");
+                    }
+                }
+            },
+            // --- END CHATBOT LOGIC ---
+
+            renderHome: () => {
+                app.initCarousel();
+                app.renderCategories();
+                app.renderHomeProducts();
+            },
+
+            initCarousel: () => {
+                const container = document.getElementById('carousel-slides');
+                if (!container) return;
+                container.innerHTML = CONFIG.HERO_SLIDES.map((slide, index) => `
+                    <div class="carousel-slide ${index === 0 ? 'active' : ''}">
+                        <div class="absolute inset-0 bg-[url('${slide.image}')] bg-cover bg-center"></div>
+                        <div class="absolute inset-0 bg-gradient-to-r from-slate-900 via-slate-900/60 to-transparent"></div>
+                        <div class="container mx-auto px-4 h-full flex items-center relative z-10">
+                            <div class="max-w-2xl fade-in">
+                                <h1 class="text-4xl md:text-6xl font-bold mb-4 text-white">${slide.title}</h1>
+                                <p class="text-lg text-slate-200 mb-8">${slide.subtitle}</p>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+                app.state.slideInterval = setInterval(app.nextSlide, 5000);
+            },
+
+            nextSlide: () => {
+                const slides = document.querySelectorAll('.carousel-slide');
+                if (slides.length === 0) return;
+                slides[app.state.currentSlide].classList.remove('active');
+                app.state.currentSlide = (app.state.currentSlide + 1) % slides.length;
+                slides[app.state.currentSlide].classList.add('active');
+            },
+
+            prevSlide: () => {
+                const slides = document.querySelectorAll('.carousel-slide');
+                if (slides.length === 0) return;
+                slides[app.state.currentSlide].classList.remove('active');
+                app.state.currentSlide = (app.state.currentSlide - 1 + slides.length) % slides.length;
+                slides[app.state.currentSlide].classList.add('active');
+            },
+
+            renderCategories: () => {
+                const container = document.getElementById('category-filters');
+                if (!container) return;
+                const cats = ['Destacados', ...TECH_CATEGORIES];
+                container.innerHTML = cats.map(cat => {
+                    const isActive = app.state.currentCategory.toLowerCase() === cat.toLowerCase();
+                    return `<button onclick="app.setCategory('${cat}')" class="px-5 py-2.5 rounded-full text-sm font-medium whitespace-nowrap transition ${isActive ? 'bg-primary text-white shadow-md' : 'bg-slate-50 text-slate-600 border border-slate-200'}">${cat}</button>`;
+                }).join('');
+            },
+
+            setCategory: (cat) => {
+                app.state.currentCategory = cat;
+                app.state.currentPage = 1;
+                app.renderCategories();
+                app.renderHomeProducts();
+            },
+
+            renderHomeProducts: () => {
+                const grid = document.getElementById('products-grid');
+                if (!grid) return;
+
+                let filtered = app.state.products;
+                if (app.state.currentCategory === 'ofertas') {
+                    filtered = app.state.products.filter(p => (p.discountPercentage || 0) > 10);
+                    document.getElementById('section-title').innerText = 'Ofertas Especiales 🔥';
+                } else if (app.state.currentCategory.toLowerCase() !== 'destacados') {
+                    filtered = app.state.products.filter(p => p.category === app.state.currentCategory);
+                    document.getElementById('section-title').innerText = app.state.currentCategory;
+                } else {
+                    document.getElementById('section-title').innerText = 'Destacados';
+                }
+
+                if (filtered.length === 0) {
+                    grid.innerHTML = '';
+                    document.getElementById('products-empty').classList.remove('hidden');
+                    return;
+                }
+                document.getElementById('products-empty').classList.add('hidden');
+
+                const start = (app.state.currentPage - 1) * app.state.itemsPerPage;
+                const paginated = filtered.slice(start, start + app.state.itemsPerPage);
+
+                grid.innerHTML = paginated.map(p => app.createProductCard(p)).join('');
+                app.renderPagination(Math.ceil(filtered.length / app.state.itemsPerPage));
+                lucide.createIcons();
+            },
+
+            createProductCard: (p) => {
+                const isLiked = app.state.wishlist.includes(p.id);
+                return `
+                <div class="bg-white rounded-2xl border border-slate-100 shadow-sm hover:shadow-xl transition-all group overflow-hidden flex flex-col h-full cursor-pointer" onclick="app.openProductModal(${p.id})">
+                    <div class="relative h-48 bg-slate-100 p-4">
+                        <img src="${p.thumbnail}" onerror="this.parentElement.parentElement.style.display='none'" class="w-full h-full object-contain group-hover:scale-110 transition-transform">
+                        <button onclick="event.stopPropagation(); app.toggleWishlist(${p.id})" class="absolute top-3 right-3 p-2 rounded-full bg-white/80 hover:bg-white shadow-sm transition z-10">
+                            <i data-lucide="heart" class="w-5 h-5 ${isLiked ? 'fill-red-500 text-red-500' : 'text-slate-400'}"></i>
+                        </button>
+                        ${(p.discountPercentage || 0) > 0 ? `<span class="absolute top-3 left-3 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded">- ${Math.round(p.discountPercentage)}%</span>` : ''}
+                    </div>
+                    <div class="p-5 flex flex-col flex-grow">
+                        <p class="text-xs text-slate-400 mb-1">${p.category}</p>
+                        <h3 class="font-bold text-slate-800 mb-1 truncate">${p.title}</h3>
+                        <div class="flex items-center justify-between mt-auto pt-4">
+                            <span class="text-xl font-bold text-slate-900">$${p.price}</span>
+                            <button onclick="event.stopPropagation(); app.addToCart(${p.id})" class="bg-primary hover:bg-indigo-700 text-white p-2 rounded-lg transition"><i data-lucide="plus" class="w-5 h-5"></i></button>
+                        </div>
+                    </div>
+                </div>`;
+            },
+
+            renderPagination: (total) => {
+                const nav = document.getElementById('pagination-controls');
+                if (!nav) return;
+                if (total <= 1) { nav.innerHTML = ''; return; }
+
+                let html = `<button onclick="app.changePage(${app.state.currentPage - 1}, ${total})" class="px-3 py-1 border border-slate-200 rounded-l hover:bg-slate-50" ${app.state.currentPage === 1 ? 'disabled opacity-50' : ''}>Prev</button>`;
+                for (let i = 1; i <= total; i++) {
+                    if (i === 1 || i === total || (i >= app.state.currentPage - 1 && i <= app.state.currentPage + 1))
+                        html += `<button onclick="app.changePage(${i}, ${total})" class="px-3 py-1 border-t border-b border-r border-slate-200 ${i === app.state.currentPage ? 'bg-indigo-50 text-primary font-bold' : 'hover:bg-slate-50'}">${i}</button>`;
+                }
+                html += `<button onclick="app.changePage(${app.state.currentPage + 1}, ${total})" class="px-3 py-1 border border-slate-200 rounded-r hover:bg-slate-50" ${app.state.currentPage === total ? 'disabled opacity-50' : ''}>Next</button>`;
+                nav.innerHTML = html;
+            },
+
+            changePage: (p, t) => { if (p >= 1 && p <= t) { app.state.currentPage = p; app.renderHomeProducts(); } },
+
+            // MODAL LOGIC
+            openProductModal: (id) => {
+                const p = app.state.products.find(prod => prod.id === id);
+                if (!p) return;
+
+                const modal = document.getElementById('product-modal');
+                const body = document.getElementById('modal-body');
+                const colors = ['#000000', '#D1D5DB', '#3B82F6'];
+                const storage = ['128GB', '256GB', '512GB'];
+
+                body.innerHTML = `
+                    <div class="bg-slate-50 p-8 flex items-center justify-center">
+                        <img src="${p.images && p.images.length > 0 ? p.images[0] : p.thumbnail}" class="max-h-[300px] object-contain drop-shadow-xl">
+                    </div>
+                    <div class="p-8 flex flex-col">
+                        <div class="mb-4">
+                            <span class="text-xs font-bold tracking-wider text-indigo-600 uppercase">${p.category}</span>
+                            <h2 class="text-3xl font-bold text-slate-900 mt-1">${p.title}</h2>
+                            <div class="flex items-center gap-2 mt-2">
+                                <div class="flex text-yellow-400"><i data-lucide="star" class="fill-current w-4 h-4"></i><span class="text-slate-600 text-sm ml-1 font-medium">${p.rating}</span></div>
+                            </div>
+                        </div>
+                        <p class="text-slate-600 leading-relaxed mb-6">${p.description}</p>
+                        <div class="mb-6">
+                            <label class="block text-sm font-bold text-slate-700 mb-2">Color</label>
+                            <div class="flex gap-3">
+                                ${colors.map((c, i) => `<button class="w-8 h-8 rounded-full border-2 ${i === 0 ? 'border-primary ring-2 ring-primary ring-offset-2' : 'border-transparent'} hover:scale-110 transition" style="background-color: ${c}"></button>`).join('')}
+                            </div>
+                        </div>
+                         <div class="mb-8">
+                            <label class="block text-sm font-bold text-slate-700 mb-2">Almacenamiento</label>
+                            <div class="flex gap-3">
+                                ${storage.map((s, i) => `<button class="px-4 py-2 rounded-lg border ${i === 1 ? 'border-primary text-primary bg-indigo-50' : 'border-slate-200 text-slate-600'} text-sm font-medium hover:border-primary transition">${s}</button>`).join('')}
+                            </div>
+                        </div>
+                        <div class="mt-auto pt-6 border-t border-slate-100 flex items-center justify-between">
+                            <div>
+                                <span class="text-slate-400 text-sm line-through block">$${(p.price * 1.2).toFixed(2)}</span>
+                                <span class="text-3xl font-bold text-slate-900">$${p.price}</span>
+                            </div>
+                            <button onclick="app.addToCart(${p.id}); app.closeProductModal()" class="bg-primary text-white px-8 py-3 rounded-xl font-bold hover:bg-indigo-700 transition shadow-lg shadow-indigo-500/30 flex items-center gap-2">
+                                Añadir al Carrito <i data-lucide="shopping-bag" size="18"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+                modal.classList.add('open');
+                document.body.style.overflow = 'hidden';
+                lucide.createIcons();
+            },
+
+            closeProductModal: () => {
+                document.getElementById('product-modal').classList.remove('open');
+                document.body.style.overflow = '';
+            },
+
+            // CART
+            renderCartItems: () => {
+                const container = document.getElementById('cart-items-container');
+                if (app.state.cart.length === 0) {
+                    document.getElementById('cart-content')?.classList.add('hidden');
+                    document.getElementById('cart-empty')?.classList.remove('hidden');
+                    document.getElementById('cart-empty')?.classList.add('flex');
+                    return;
+                }
+                document.getElementById('cart-content').classList.remove('hidden');
+                document.getElementById('cart-empty').classList.add('hidden');
+                document.getElementById('cart-empty').classList.remove('flex');
+
+                let total = 0;
+                container.innerHTML = app.state.cart.map(item => {
+                    const p = app.state.products.find(prod => prod.id === item.id) || item;
+                    total += p.price * item.qty;
+                    return `
+                    <div class="flex gap-4 bg-white p-4 rounded-xl border border-slate-100 items-center">
+                        <img src="${p.thumbnail}" class="w-20 h-20 object-contain bg-slate-50 rounded p-2">
+                        <div class="flex-grow">
+                            <h3 class="font-bold text-slate-800 truncate max-w-[200px]">${p.title}</h3>
+                            <p class="text-primary font-bold">$${p.price}</p>
+                        </div>
+                        <div class="flex items-center gap-3 bg-slate-50 rounded-lg p-1">
+                            <button onclick="app.updateQty(${item.id}, -1)" class="w-8 h-8 flex items-center justify-center text-slate-600 hover:bg-white rounded shadow-sm">-</button>
+                            <span class="text-sm font-bold w-4 text-center">${item.qty}</span>
+                            <button onclick="app.updateQty(${item.id}, 1)" class="w-8 h-8 flex items-center justify-center text-slate-600 hover:bg-white rounded shadow-sm">+</button>
+                        </div>
+                    </div>`;
+                }).join('');
+
+                const tax = total * 0.18;
+                document.getElementById('cart-subtotal').innerText = `$${total.toFixed(2)}`;
+                document.getElementById('cart-tax').innerText = `$${tax.toFixed(2)}`;
+                document.getElementById('cart-total').innerText = `$${(total + tax).toFixed(2)}`;
+                lucide.createIcons();
+            },
+
+            // Modificado para aceptar cantidad personalizada desde el Chatbot
+            addToCart: (id, quantity = 1) => {
+                const exist = app.state.cart.find(i => i.id === id);
+                if (exist) exist.qty += quantity;
+                else {
+                    const p = app.state.products.find(prod => prod.id === id);
+                    if (p) {
+                        app.state.cart.push({ id, qty: quantity, title: p.title, price: p.price, thumbnail: p.thumbnail });
+                    } else {
+                        app.toast('Producto no encontrado', 'error');
+                        return;
+                    }
+                }
+                app.saveState();
+                app.toast(`Agregado al carrito (${quantity})`);
+            },
+
+            updateQty: (id, d) => {
+                const item = app.state.cart.find(i => i.id === id);
+                if (item) { item.qty += d; if (item.qty <= 0) app.state.cart = app.state.cart.filter(i => i.id !== id); }
+                app.saveState(); app.renderCartItems();
+            },
+
+            renderWishlistItems: () => {
+                const grid = document.getElementById('wishlist-grid');
+                const emptyState = document.getElementById('wishlist-empty');
+
+                if (!grid) return;
+
+                const wishlistProducts = app.state.products.filter(p => app.state.wishlist.includes(p.id));
+
+                if (wishlistProducts.length === 0) {
+                    grid.innerHTML = '';
+                    emptyState.classList.remove('hidden');
+                    emptyState.classList.add('flex');
+                } else {
+                    emptyState.classList.add('hidden');
+                    emptyState.classList.remove('flex');
+                    grid.innerHTML = wishlistProducts.map(p => app.createProductCard(p)).join('');
+                }
+                lucide.createIcons();
+            },
+
+            // CHECKOUT & PAYMENT LOGIC
+            renderCheckout: () => {
+                const total = app.state.cart.reduce((acc, i) => acc + (i.price * i.qty), 0);
+                const tax = total * 0.18;
+                document.getElementById('checkout-total').innerText = `$${(total + tax).toFixed(2)}`;
+                app.setPaymentMethod('card');
+            },
+
+            setPaymentMethod: (method) => {
+                app.state.paymentMethod = method;
+                const btnCard = document.getElementById('btn-method-card');
+                const btnYape = document.getElementById('btn-method-yape');
+                const formCard = document.getElementById('payment-card');
+                const formYape = document.getElementById('payment-yape');
+
+                if (method === 'card') {
+                    btnCard.className = "flex-1 py-4 font-medium text-center border-b-2 border-primary text-primary bg-indigo-50 transition";
+                    btnYape.className = "flex-1 py-4 font-medium text-center border-b-2 border-transparent text-slate-500 hover:bg-slate-50 transition";
+                    formCard.classList.remove('hidden');
+                    formYape.classList.add('hidden');
+                    if (app.state.qrInterval) clearInterval(app.state.qrInterval);
+                } else {
+                    btnYape.className = "flex-1 py-4 font-medium text-center border-b-2 border-primary text-primary bg-indigo-50 transition";
+                    btnCard.className = "flex-1 py-4 font-medium text-center border-b-2 border-transparent text-slate-500 hover:bg-slate-50 transition";
+                    formYape.classList.remove('hidden');
+                    formCard.classList.add('hidden');
+                    app.startQrTimer();
+                }
+            },
+
+            formatCardNumber: (input) => {
+                let value = input.value.replace(/\D/g, '');
+                const visa = document.getElementById('card-logo-visa');
+                const mc = document.getElementById('card-logo-mc');
+
+                if (value.startsWith('4')) {
+                    visa.classList.remove('opacity-30', 'grayscale');
+                    mc.classList.add('opacity-30', 'grayscale');
+                } else if (value.startsWith('5')) {
+                    mc.classList.remove('opacity-30', 'grayscale');
+                    visa.classList.add('opacity-30', 'grayscale');
+                } else {
+                    visa.classList.add('opacity-30', 'grayscale');
+                    mc.classList.add('opacity-30', 'grayscale');
+                }
+
+                value = value.match(/.{1,4}/g)?.join(' ') || value;
+                input.value = value;
+            },
+
+            formatExpiry: (input) => {
+                let value = input.value.replace(/\D/g, '');
+                if (value.length >= 2) value = value.slice(0, 2) + '/' + value.slice(2, 4);
+                input.value = value;
+            },
+
+            startQrTimer: () => {
+                let timeLeft = 300;
+                const timerEl = document.getElementById('qr-timer');
+                if (app.state.qrInterval) clearInterval(app.state.qrInterval);
+
+                app.state.qrInterval = setInterval(() => {
+                    timeLeft--;
+                    const m = Math.floor(timeLeft / 60).toString().padStart(2, '0');
+                    const s = (timeLeft % 60).toString().padStart(2, '0');
+                    if (timerEl) timerEl.innerText = `${m}:${s}`;
+                    if (timeLeft <= 0) clearInterval(app.state.qrInterval);
+                }, 1000);
+            },
+
+            processPayment: async () => {
+                if (app.state.paymentMethod === 'card') {
+                    const num = document.getElementById('card-number').value;
+                    const cv = document.getElementById('card-cvv').value;
+                    if (num.length < 16 || cv.length < 3) {
+                        app.toast("Por favor completa los datos de la tarjeta", "error");
+                        return;
+                    }
+                } else {
+                    const code = document.getElementById('payment-code').value;
+                    if (!code) {
+                        app.toast("Ingresa el código de operación", "error");
+                        return;
+                    }
+                }
+
+                const overlay = document.getElementById('processing-overlay');
+                const s1 = document.getElementById('step-1');
+                const s2 = document.getElementById('step-2');
+                const s3 = document.getElementById('step-3');
+
+                overlay.classList.remove('hidden');
+
+                s1.classList.add('active');
+                await new Promise(r => setTimeout(r, 1500));
+                s1.classList.remove('active'); s1.style.opacity = '0.5';
+                s2.classList.add('active');
+                await new Promise(r => setTimeout(r, 1500));
+                s2.classList.remove('active'); s2.style.opacity = '0.5';
+                s3.classList.add('active');
+                await new Promise(r => setTimeout(r, 1000));
+
+                overlay.classList.add('hidden');
+
+                const total = app.state.cart.reduce((acc, i) => acc + (i.price * i.qty), 0) * 1.18;
+                app.state.lastOrder = {
+                    id: 'ORD-' + Math.floor(Math.random() * 1000000),
+                    total: total.toFixed(2),
+                    date: new Date().toLocaleDateString()
+                };
+
+                app.state.cart = [];
+                app.saveState();
+                app.router('success');
+            },
+
+            renderSuccess: () => {
+                const order = app.state.lastOrder;
+                if (!order) { app.router('home'); return; }
+                document.getElementById('success-order-id').innerText = order.id;
+                document.getElementById('success-date').innerText = order.date;
+                document.getElementById('success-total').innerText = `$${order.total}`;
+            },
+
+            // UTILS
+            toggleWishlist: (id) => {
+                const idx = app.state.wishlist.indexOf(id);
+                if (idx === -1) app.state.wishlist.push(id);
+                else app.state.wishlist.splice(idx, 1);
+                app.saveState();
+
+                if (app.state.currentView === 'wishlist') app.renderWishlistItems();
+                else if (app.state.currentView === 'home') app.renderHomeProducts();
+            },
+
+            saveState: () => {
+                localStorage.setItem('techstore_cart', JSON.stringify(app.state.cart));
+                localStorage.setItem('techstore_wishlist', JSON.stringify(app.state.wishlist));
+                app.updateBadges();
+            },
+
+            updateBadges: () => {
+                const c = app.state.cart.reduce((a, b) => a + b.qty, 0);
+                document.getElementById('cart-count').innerText = c;
+                document.getElementById('cart-count').classList.toggle('hidden', c === 0);
+
+                const w = app.state.wishlist.length;
+                document.getElementById('wishlist-count').innerText = w;
+                document.getElementById('wishlist-count').classList.toggle('hidden', w === 0);
+            },
+
+            toast: (msg, type = 'success') => {
+                const t = document.createElement('div');
+                t.className = 'toast';
+                t.innerHTML = `<i data-lucide="${type === 'success' ? 'check-circle' : 'alert-circle'}" class="${type === 'success' ? 'text-green-500' : 'text-red-500'}"></i><span>${msg}</span>`;
+                document.getElementById('toast-container').appendChild(t);
+                lucide.createIcons();
+                requestAnimationFrame(() => t.classList.add('show'));
+                setTimeout(() => { t.classList.remove('show'); setTimeout(() => t.remove(), 300); }, 3000);
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', app.init);
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Libro de Reclamaciones - TechStore</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Fuentes Google (Inter) -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        slate: {
+                            850: '#1e293b',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+        /* Estilos para el formulario */
+        .form-input {
+            transition: all 0.2s;
+        }
+        .form-input:focus {
+            box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800">
+
+    <!-- --- HEADER (Consistente con el Centro de Ayuda) --- -->
+    <header class="bg-[#0B1120] text-white sticky top-0 z-50 shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <!-- Logo -->
+                <div class="flex items-center gap-2 cursor-pointer" onclick="window.location.href='#'">
+                    <div class="bg-indigo-600 p-1.5 rounded-lg">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect><rect x="9" y="9" width="6" height="6"></rect><line x1="9" y1="1" x2="9" y2="4"></line><line x1="15" y1="1" x2="15" y2="4"></line><line x1="9" y1="20" x2="9" y2="23"></line><line x1="15" y1="20" x2="15" y2="23"></line><line x1="20" y1="9" x2="23" y2="9"></line><line x1="20" y1="14" x2="23" y2="14"></line><line x1="1" y1="9" x2="4" y2="9"></line><line x1="1" y1="14" x2="4" y2="14"></line></svg>
+                    </div>
+                    <div class="flex flex-col leading-none">
+                        <span class="text-xl font-bold tracking-tight">TechStore</span>
+                        <span class="text-[10px] text-gray-400 uppercase tracking-widest">Modular System</span>
+                    </div>
+                </div>
+
+                <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-gray-300">
+                    <a href="/index.html" class="hover:text-white transition-colors">Inicio</a>
+                    <a href="/index.html" class="hover:text-white transition-colors">Productos</a>
+                    <a href="/views/libro.html" class="text-white flex items-center gap-1">
+                        Libro de Reclamaciones <span class="text-indigo-400">⚖️</span>
+                    </a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- --- HERO BANNER --- -->
+    <div class="relative bg-[#0B1120] py-16">
+        <div class="absolute inset-0 overflow-hidden">
+            <div class="absolute -top-[100px] right-0 w-[600px] h-[600px] bg-indigo-900/20 blur-[120px] rounded-full pointer-events-none"></div>
+        </div>
+        <div class="relative max-w-4xl mx-auto px-4 text-center">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-900/50 border border-indigo-700/50 text-indigo-300 text-xs font-semibold uppercase tracking-wide mb-4">
+                <span class="w-2 h-2 rounded-full bg-indigo-400 animate-pulse"></span>
+                Atención al Consumidor
+            </div>
+            <h1 class="text-3xl md:text-5xl font-extrabold text-white mb-4">
+                Libro de Reclamaciones Virtual
+            </h1>
+            <p class="text-gray-400 text-lg max-w-2xl mx-auto">
+                En TechStore valoramos tu opinión. Si has tenido algún inconveniente con nuestros productos o servicios, por favor regístralo aquí para brindarte una solución.
+            </p>
+        </div>
+    </div>
+
+    <!-- --- MAIN CONTENT --- -->
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12 -mt-10 relative z-10">
+        
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            
+            <!-- FORMULARIO (Columna Izquierda - 2/3) -->
+            <div class="lg:col-span-2">
+                <div class="bg-white rounded-2xl shadow-xl border border-slate-100 p-8">
+                    <h2 class="text-2xl font-bold text-slate-800 mb-6 flex items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-indigo-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                        Registrar Hoja de Reclamación
+                    </h2>
+
+                    <form id="complaintForm" class="space-y-6">
+                        
+                        <!-- Sección 1: Datos Personales -->
+                        <div class="bg-slate-50 p-5 rounded-xl border border-slate-100">
+                            <h3 class="text-sm font-bold text-indigo-600 uppercase tracking-wider mb-4 border-b border-indigo-100 pb-2">1. Identificación del Consumidor</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-700 mb-1">Nombre Completo *</label>
+                                    <input type="text" id="name" required class="form-input w-full rounded-lg border-slate-300 border px-3 py-2 bg-white text-slate-900 focus:outline-none focus:border-indigo-500" placeholder="Ej. Juan Pérez">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-700 mb-1">DNI / Documento ID *</label>
+                                    <input type="text" id="documentId" required class="form-input w-full rounded-lg border-slate-300 border px-3 py-2 bg-white text-slate-900 focus:outline-none focus:border-indigo-500" placeholder="Ej. 12345678">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-700 mb-1">Correo Electrónico *</label>
+                                    <input type="email" id="email" required class="form-input w-full rounded-lg border-slate-300 border px-3 py-2 bg-white text-slate-900 focus:outline-none focus:border-indigo-500" placeholder="juan@ejemplo.com">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-700 mb-1">Teléfono</label>
+                                    <input type="tel" id="phone" class="form-input w-full rounded-lg border-slate-300 border px-3 py-2 bg-white text-slate-900 focus:outline-none focus:border-indigo-500" placeholder="+51 999 999 999">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Sección 2: Detalle del Reclamo -->
+                        <div class="bg-slate-50 p-5 rounded-xl border border-slate-100">
+                            <h3 class="text-sm font-bold text-indigo-600 uppercase tracking-wider mb-4 border-b border-indigo-100 pb-2">2. Detalle de la Reclamación</h3>
+                            
+                            <div class="mb-4">
+                                <label class="block text-sm font-medium text-slate-700 mb-1">Tipo de Registro *</label>
+                                <div class="flex gap-4 mt-2">
+                                    <label class="flex items-center gap-2 cursor-pointer bg-white px-4 py-2 rounded-lg border border-slate-200 hover:border-indigo-300 shadow-sm transition-colors">
+                                        <input type="radio" name="type" value="Reclamo" checked class="text-indigo-600 focus:ring-indigo-500">
+                                        <div>
+                                            <span class="block font-semibold text-sm">Reclamo</span>
+                                            <span class="block text-xs text-slate-500">Disconformidad con producto/servicio</span>
+                                        </div>
+                                    </label>
+                                    <label class="flex items-center gap-2 cursor-pointer bg-white px-4 py-2 rounded-lg border border-slate-200 hover:border-indigo-300 shadow-sm transition-colors">
+                                        <input type="radio" name="type" value="Queja" class="text-indigo-600 focus:ring-indigo-500">
+                                        <div>
+                                            <span class="block font-semibold text-sm">Queja</span>
+                                            <span class="block text-xs text-slate-500">Malestar en la atención</span>
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="mb-4">
+                                <label class="block text-sm font-medium text-slate-700 mb-1">Producto / Servicio Contratado (Monto aprox.)</label>
+                                <div class="flex gap-2">
+                                    <input type="text" id="product" class="form-input flex-1 rounded-lg border-slate-300 border px-3 py-2 focus:outline-none focus:border-indigo-500" placeholder="Ej. Laptop Gaming X5">
+                                    <input type="number" id="amount" class="form-input w-32 rounded-lg border-slate-300 border px-3 py-2 focus:outline-none focus:border-indigo-500" placeholder="S/ 0.00">
+                                </div>
+                            </div>
+
+                            <div class="mb-4">
+                                <label class="block text-sm font-medium text-slate-700 mb-1">Descripción de los hechos *</label>
+                                <textarea id="details" rows="4" required class="form-input w-full rounded-lg border-slate-300 border px-3 py-2 bg-white text-slate-900 focus:outline-none focus:border-indigo-500" placeholder="Describa detalladamente lo sucedido..."></textarea>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-1">Pedido del Consumidor</label>
+                                <textarea id="request" rows="2" class="form-input w-full rounded-lg border-slate-300 border px-3 py-2 bg-white text-slate-900 focus:outline-none focus:border-indigo-500" placeholder="¿Qué solución espera? (Ej. Cambio de producto, devolución...)"></textarea>
+                            </div>
+                        </div>
+
+                        <!-- Checkbox y Botón -->
+                        <div class="flex items-start gap-3 mt-4">
+                            <input type="checkbox" id="terms" required class="mt-1 text-indigo-600 rounded border-gray-300 focus:ring-indigo-500">
+                            <label for="terms" class="text-sm text-slate-600">
+                                Declaro que los datos consignados son verdaderos y acepto los <a href="#" class="text-indigo-600 hover:underline">Términos y Condiciones</a> y la Política de Privacidad de TechStore.
+                            </label>
+                        </div>
+
+                        <button type="submit" class="w-full bg-indigo-600 text-white font-bold py-4 rounded-xl shadow-lg hover:bg-indigo-700 hover:shadow-indigo-500/30 transition-all active:scale-[0.99] flex items-center justify-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+                            Enviar Reclamo
+                        </button>
+
+                    </form>
+                </div>
+            </div>
+
+            <!-- SIDEBAR / INFO (Columna Derecha - 1/3) -->
+            <div class="lg:col-span-1 space-y-6">
+                <!-- Info Legal -->
+                <div class="bg-indigo-900 text-white rounded-2xl p-6 shadow-lg">
+                    <h3 class="font-bold text-lg mb-3 flex items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                        Información Legal
+                    </h3>
+                    <p class="text-indigo-200 text-sm leading-relaxed mb-4">
+                        Conforme a lo establecido en el Código de Protección y Defensa del Consumidor, este establecimiento cuenta con un Libro de Reclamaciones Virtual a su disposición.
+                    </p>
+                    <div class="text-xs text-indigo-300 border-t border-indigo-700 pt-3">
+                        <p>Razón Social: TECHSTORE S.A.C.</p>
+                        <p>RUC: 20123456789</p>
+                        <p>Dirección: Av. Tecnología 123, Lima.</p>
+                    </div>
+                </div>
+
+                <!-- Resumen de Plazos -->
+                <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
+                    <h3 class="font-bold text-slate-800 mb-4">Plazos de Atención</h3>
+                    <ul class="space-y-4">
+                        <li class="flex items-start gap-3">
+                            <div class="bg-green-100 p-2 rounded-lg text-green-600 mt-1">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                            </div>
+                            <div>
+                                <span class="block font-semibold text-slate-700">15 Días Hábiles</span>
+                                <span class="text-xs text-slate-500">Tiempo máximo de respuesta legal.</span>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <div class="bg-blue-100 p-2 rounded-lg text-blue-600 mt-1">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                            </div>
+                            <div>
+                                <span class="block font-semibold text-slate-700">Copia al Correo</span>
+                                <span class="text-xs text-slate-500">Recibirá una copia de su reclamo automáticamente.</span>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- --- LISTA DE RECLAMOS (DEMO ADMIN) --- -->
+        <div class="mt-12 border-t-2 border-dashed border-slate-200 pt-10">
+            <div class="flex justify-between items-end mb-6">
+                <div>
+                    <h2 class="text-xl font-bold text-slate-800">Panel Administrativo (Demo)</h2>
+                    <p class="text-sm text-slate-500">Aquí se visualizan los reclamos guardados en la base de datos local.</p>
+                </div>
+                <button id="clearListBtn" class="text-sm text-red-500 hover:text-red-700 hover:underline">Borrar Lista</button>
+            </div>
+            
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm text-left">
+                        <thead class="bg-slate-50 text-slate-500 uppercase font-bold text-xs">
+                            <tr>
+                                <th class="px-6 py-4">Código</th>
+                                <th class="px-6 py-4">Fecha</th>
+                                <th class="px-6 py-4">Nombre</th>
+                                <th class="px-6 py-4">Tipo</th>
+                                <th class="px-6 py-4">Asunto</th>
+                                <th class="px-6 py-4">Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody id="complaintsList" class="divide-y divide-slate-100">
+                            <!-- Los reclamos se insertarán aquí con JS -->
+                            <tr id="emptyState">
+                                <td colspan="6" class="px-6 py-8 text-center text-slate-400 italic">
+                                    No hay reclamos registrados aún.
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- --- FOOTER --- -->
+    <footer class="bg-[#0B1120] text-gray-400 py-12 mt-20 border-t border-gray-800">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <div class="flex justify-center items-center gap-2 mb-4 text-white">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect><rect x="9" y="9" width="6" height="6"></rect><line x1="9" y1="1" x2="9" y2="4"></line><line x1="15" y1="1" x2="15" y2="4"></line><line x1="9" y1="20" x2="9" y2="23"></line><line x1="15" y1="20" x2="15" y2="23"></line><line x1="20" y1="9" x2="23" y2="9"></line><line x1="20" y1="14" x2="23" y2="14"></line><line x1="1" y1="9" x2="4" y2="9"></line><line x1="1" y1="14" x2="4" y2="14"></line></svg>
+                <span class="font-bold text-lg">TechStore</span>
+            </div>
+            <p class="text-xs text-gray-500">© 2024 TechStore. Libro de Reclamaciones Virtual v1.0</p>
+        </div>
+    </footer>
+
+    <!-- LOGICA JAVASCRIPT -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.getElementById('complaintForm');
+            const complaintsList = document.getElementById('complaintsList');
+            const emptyState = document.getElementById('emptyState');
+            const clearBtn = document.getElementById('clearListBtn');
+
+            // 1. Cargar datos del localStorage al iniciar
+            loadComplaints();
+
+            // 2. Manejar el envío del formulario
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+
+                // Recopilar datos
+                const newComplaint = {
+                    id: 'REC-' + Date.now().toString().slice(-6), // ID simple único
+                    date: new Date().toLocaleDateString('es-PE', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute:'2-digit' }),
+                    name: document.getElementById('name').value,
+                    document: document.getElementById('documentId').value,
+                    email: document.getElementById('email').value,
+                    phone: document.getElementById('phone').value,
+                    type: document.querySelector('input[name="type"]:checked').value,
+                    product: document.getElementById('product').value,
+                    amount: document.getElementById('amount').value,
+                    details: document.getElementById('details').value,
+                    request: document.getElementById('request').value,
+                    status: 'Pendiente'
+                };
+
+                // Guardar
+                saveComplaint(newComplaint);
+
+                // Feedback visual y reset
+                alert(`Reclamo registrado con éxito.\nCódigo de seguimiento: ${newComplaint.id}`);
+                form.reset();
+                loadComplaints(); // Recargar la tabla
+                
+                // Scroll suave a la tabla para ver el nuevo registro
+                complaintsList.scrollIntoView({ behavior: 'smooth' });
+            });
+
+            // 3. Función para guardar en LocalStorage
+            function saveComplaint(complaint) {
+                let complaints = JSON.parse(localStorage.getItem('techStoreComplaints')) || [];
+                complaints.unshift(complaint); // Agregar al principio
+                localStorage.setItem('techStoreComplaints', JSON.stringify(complaints));
+            }
+
+            // 4. Función para cargar y renderizar la tabla
+            function loadComplaints() {
+                const complaints = JSON.parse(localStorage.getItem('techStoreComplaints')) || [];
+
+                if (complaints.length > 0) {
+                    emptyState.style.display = 'none';
+                    // Limpiar filas existentes excepto el emptyState
+                    Array.from(complaintsList.children).forEach(child => {
+                        if (child.id !== 'emptyState') child.remove();
+                    });
+
+                    complaints.forEach(c => {
+                        const row = document.createElement('tr');
+                        row.className = 'hover:bg-slate-50 transition-colors border-b border-slate-100 last:border-0';
+                        
+                        // Estilo de badge para el tipo
+                        const typeClass = c.type === 'Reclamo' ? 'bg-orange-100 text-orange-700' : 'bg-yellow-100 text-yellow-700';
+                        
+                        row.innerHTML = `
+                            <td class="px-6 py-4 font-mono text-xs font-bold text-indigo-600">#${c.id}</td>
+                            <td class="px-6 py-4 text-slate-500 text-xs">${c.date}</td>
+                            <td class="px-6 py-4 font-medium text-slate-900">${c.name}</td>
+                            <td class="px-6 py-4"><span class="px-2 py-1 rounded text-xs font-bold ${typeClass}">${c.type}</span></td>
+                            <td class="px-6 py-4 text-slate-600 truncate max-w-[200px]" title="${c.details}">${c.product ? c.product : 'General'}</td>
+                            <td class="px-6 py-4"><span class="flex items-center gap-1 text-slate-500"><span class="w-2 h-2 rounded-full bg-slate-400"></span> ${c.status}</span></td>
+                        `;
+                        complaintsList.appendChild(row);
+                    });
+                } else {
+                    emptyState.style.display = 'table-row';
+                     Array.from(complaintsList.children).forEach(child => {
+                        if (child.id !== 'emptyState') child.remove();
+                    });
+                }
+            }
+
+            // 5. Botón para limpiar lista (Para pruebas)
+            clearBtn.addEventListener('click', () => {
+                if(confirm('¿Estás seguro de borrar todo el historial local?')) {
+                    localStorage.removeItem('techStoreComplaints');
+                    loadComplaints();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

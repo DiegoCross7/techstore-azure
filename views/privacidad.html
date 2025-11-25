@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Política de Privacidad - TechStore</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Fuentes Google (Inter) -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        slate: {
+                            850: '#1e293b',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            scroll-behavior: smooth;
+        }
+        /* Estilo para la navegación activa */
+        .nav-link.active {
+            color: #4F46E5; /* Indigo 600 */
+            border-left-color: #4F46E5;
+            background-color: #EEF2FF; /* Indigo 50 */
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800">
+
+    <!-- --- HEADER --- -->
+    <header class="bg-[#0B1120] text-white sticky top-0 z-50 shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <!-- Logo -->
+                <div class="flex items-center gap-2 cursor-pointer">
+                    <div class="bg-indigo-600 p-1.5 rounded-lg">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect><rect x="9" y="9" width="6" height="6"></rect><line x1="9" y1="1" x2="9" y2="4"></line><line x1="15" y1="1" x2="15" y2="4"></line><line x1="9" y1="20" x2="9" y2="23"></line><line x1="15" y1="20" x2="15" y2="23"></line><line x1="20" y1="9" x2="23" y2="9"></line><line x1="20" y1="14" x2="23" y2="14"></line><line x1="1" y1="9" x2="4" y2="9"></line><line x1="1" y1="14" x2="4" y2="14"></line></svg>
+                    </div>
+                    <div class="flex flex-col leading-none">
+                        <span class="text-xl font-bold tracking-tight">TechStore</span>
+                        <span class="text-[10px] text-gray-400 uppercase tracking-widest">Modular System</span>
+                    </div>
+                </div>
+
+                <!-- Nav Links -->
+                <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-gray-300">
+                    <a href="/index.html" class="hover:text-white transition-colors">Inicio</a>
+                    <a href="/index.html" class="hover:text-white transition-colors">Productos</a>
+                    <a href="/index.html" class="text-white flex items-center gap-1">Ofertas <span class="text-orange-500">🔥</span></a>
+                    <a href="/views/centro_ayuda.html" class="text-indigo-400 font-semibold border-b-2 border-indigo-400 pb-0.5">Ayuda</a>
+                    <a href="/views/vip_access.html" class="hover:text-white transition-colors">VIP</a>
+                    <a href="/views/ubicacion.html" class="hover:text-white transition-colors">Tiendas</a>
+                    <a href="/views/centro_ayuda.html" class="text-indigo-400 font-semibold border-b-2 border-indigo-400 pb-0.5">Ayuda</a>
+                </nav>
+
+                <!-- Icons -->
+                <div class="flex items-center gap-6 text-gray-300">
+                    <button class="hover:text-white transition-colors"><svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></button>
+                    <button class="hover:text-white transition-colors relative">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+                        <span class="absolute -top-2 -right-2 bg-indigo-600 text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">2</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- --- HERO SECTION --- -->
+    <div class="relative bg-[#0B1120] pb-24 pt-12">
+        <div class="absolute inset-0 overflow-hidden">
+            <div class="absolute -top-[100px] left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-indigo-600/20 blur-[100px] rounded-full pointer-events-none"></div>
+        </div>
+        <div class="relative max-w-4xl mx-auto px-4 text-center">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 text-indigo-300 text-xs font-semibold border border-indigo-500/20 mb-6">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                Legal
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3 text-gray-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                <span class="text-white">Privacidad</span>
+            </div>
+            <h1 class="text-3xl md:text-5xl font-extrabold text-white mb-6">
+                Política de Privacidad
+            </h1>
+            <p class="text-gray-400 mb-8 text-lg max-w-2xl mx-auto">
+                Tu confianza es nuestra prioridad. Entiende cómo protegemos, recopilamos y utilizamos tus datos personales.
+            </p>
+        </div>
+    </div>
+
+    <!-- --- MAIN CONTENT (Grid Layout) --- -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-16 relative z-10 mb-20">
+        
+        <div class="flex flex-col lg:flex-row gap-8">
+            
+            <!-- SIDEBAR DE NAVEGACIÓN (Sticky) -->
+            <aside class="lg:w-1/4">
+                <div class="bg-white rounded-2xl shadow-lg border border-slate-100 p-4 sticky top-24">
+                    <h3 class="font-bold text-slate-900 mb-4 px-4 text-sm uppercase tracking-wider">Índice</h3>
+                    <nav class="flex flex-col space-y-1">
+                        <a href="#recopilacion" class="nav-link active block px-4 py-3 rounded-lg text-sm text-slate-600 hover:bg-slate-50 hover:text-indigo-600 transition-all border-l-4 border-transparent">1. Datos que Recopilamos</a>
+                        <a href="#uso" class="nav-link block px-4 py-3 rounded-lg text-sm text-slate-600 hover:bg-slate-50 hover:text-indigo-600 transition-all border-l-4 border-transparent">2. Uso de la Información</a>
+                        <a href="#cookies" class="nav-link block px-4 py-3 rounded-lg text-sm text-slate-600 hover:bg-slate-50 hover:text-indigo-600 transition-all border-l-4 border-transparent">3. Cookies y Rastreo</a>
+                        <a href="#seguridad" class="nav-link block px-4 py-3 rounded-lg text-sm text-slate-600 hover:bg-slate-50 hover:text-indigo-600 transition-all border-l-4 border-transparent">4. Seguridad de Datos</a>
+                        <a href="#terceros" class="nav-link block px-4 py-3 rounded-lg text-sm text-slate-600 hover:bg-slate-50 hover:text-indigo-600 transition-all border-l-4 border-transparent">5. Compartir con Terceros</a>
+                        <a href="#derechos" class="nav-link block px-4 py-3 rounded-lg text-sm text-slate-600 hover:bg-slate-50 hover:text-indigo-600 transition-all border-l-4 border-transparent">6. Tus Derechos (ARCO)</a>
+                    </nav>
+                    
+                    <div class="mt-6 pt-6 border-t border-slate-100 px-4">
+                        <p class="text-xs text-slate-400 mb-2">¿Dudas sobre tus datos?</p>
+                        <a href="mailto:privacidad@techstore.com" class="text-sm font-semibold text-indigo-600 flex items-center gap-1 hover:underline">
+                            privacidad@techstore.com
+                        </a>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- CONTENIDO DEL TEXTO -->
+            <main class="lg:w-3/4">
+                <div class="bg-white rounded-3xl shadow-sm border border-slate-100 p-8 md:p-12">
+                    
+                    <!-- Sección 1: Recopilación -->
+                    <section id="recopilacion" class="mb-12 scroll-mt-28">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                            </div>
+                            <h2 class="text-2xl font-bold text-slate-900">1. Información que Recopilamos</h2>
+                        </div>
+                        <p class="text-slate-600 leading-relaxed mb-4">
+                            En TechStore recopilamos información para brindarte una mejor experiencia de compra. Esto incluye:
+                        </p>
+                        <ul class="space-y-3 text-slate-600 list-disc pl-6 mb-4">
+                            <li><strong>Información Personal:</strong> Nombre, dirección de correo electrónico, número de teléfono y dirección de envío cuando te registras o realizas una compra.</li>
+                            <li><strong>Información de Pago:</strong> Detalles procesados de forma segura a través de nuestros proveedores de pago cifrados (no almacenamos tu CVV).</li>
+                            <li><strong>Información Técnica:</strong> Dirección IP, tipo de navegador y datos de navegación para mejorar nuestro sitio web.</li>
+                        </ul>
+                    </section>
+
+                    <hr class="border-slate-100 my-8">
+
+                    <!-- Sección 2: Uso -->
+                    <section id="uso" class="mb-12 scroll-mt-28">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="w-10 h-10 rounded-lg bg-green-50 flex items-center justify-center text-green-600">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                            </div>
+                            <h2 class="text-2xl font-bold text-slate-900">2. Uso de la Información</h2>
+                        </div>
+                        <p class="text-slate-600 leading-relaxed mb-4">
+                            Utilizamos tus datos exclusivamente para los siguientes fines:
+                        </p>
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div class="p-4 bg-slate-50 rounded-xl border border-slate-100">
+                                <h4 class="font-bold text-slate-800 mb-1">Procesamiento de Pedidos</h4>
+                                <p class="text-sm text-slate-500">Para enviar tus productos, enviarte facturas y actualizaciones de envío.</p>
+                            </div>
+                            <div class="p-4 bg-slate-50 rounded-xl border border-slate-100">
+                                <h4 class="font-bold text-slate-800 mb-1">Soporte al Cliente</h4>
+                                <p class="text-sm text-slate-500">Para responder a tus consultas, devoluciones y reclamos de garantía.</p>
+                            </div>
+                            <div class="p-4 bg-slate-50 rounded-xl border border-slate-100">
+                                <h4 class="font-bold text-slate-800 mb-1">Mejora del Servicio</h4>
+                                <p class="text-sm text-slate-500">Analizar tendencias y mejorar la interfaz de nuestra tienda.</p>
+                            </div>
+                            <div class="p-4 bg-slate-50 rounded-xl border border-slate-100">
+                                <h4 class="font-bold text-slate-800 mb-1">Marketing (Opcional)</h4>
+                                <p class="text-sm text-slate-500">Solo si has aceptado recibir nuestro boletín de ofertas.</p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <hr class="border-slate-100 my-8">
+
+                    <!-- Sección 3: Cookies -->
+                    <section id="cookies" class="mb-12 scroll-mt-28">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="w-10 h-10 rounded-lg bg-orange-50 flex items-center justify-center text-orange-600">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                            </div>
+                            <h2 class="text-2xl font-bold text-slate-900">3. Cookies y Tecnologías de Rastreo</h2>
+                        </div>
+                        <p class="text-slate-600 leading-relaxed mb-4">
+                            Nuestro sitio web utiliza "cookies" para mejorar tu experiencia. Una cookie es un pequeño archivo de texto que se almacena en tu dispositivo para recordar tus preferencias (como los artículos en tu carrito).
+                        </p>
+                        <p class="text-slate-600 leading-relaxed">
+                            Puedes elegir configurar tu navegador web para rechazar las cookies o para alertarte cuando se envíen cookies. Ten en cuenta que algunas partes del sitio pueden no funcionar correctamente sin ellas.
+                        </p>
+                    </section>
+
+                    <hr class="border-slate-100 my-8">
+
+                    <!-- Sección 4: Seguridad -->
+                    <section id="seguridad" class="mb-12 scroll-mt-28">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="w-10 h-10 rounded-lg bg-purple-50 flex items-center justify-center text-purple-600">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                            </div>
+                            <h2 class="text-2xl font-bold text-slate-900">4. Seguridad de Datos</h2>
+                        </div>
+                        <p class="text-slate-600 leading-relaxed mb-4">
+                            Implementamos una variedad de medidas de seguridad para mantener la seguridad de tu información personal.
+                        </p>
+                        <ul class="space-y-2 text-slate-600">
+                            <li class="flex items-center gap-2"><svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-green-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> Certificado SSL (Secure Socket Layer) en todo el sitio.</li>
+                            <li class="flex items-center gap-2"><svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-green-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> Pasarelas de pago que cumplen con PCI-DSS.</li>
+                            <li class="flex items-center gap-2"><svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-green-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> Acceso restringido a datos personales solo a empleados autorizados.</li>
+                        </ul>
+                    </section>
+
+                    <hr class="border-slate-100 my-8">
+
+                    <!-- Sección 5: Derechos -->
+                    <section id="derechos" class="scroll-mt-28">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="w-10 h-10 rounded-lg bg-indigo-50 flex items-center justify-center text-indigo-600">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                            </div>
+                            <h2 class="text-2xl font-bold text-slate-900">5. Tus Derechos (ARCO)</h2>
+                        </div>
+                        <p class="text-slate-600 leading-relaxed mb-6">
+                            Como usuario, tienes derechos sobre tu información personal (Acceso, Rectificación, Cancelación y Oposición). En cualquier momento puedes:
+                        </p>
+                        <div class="bg-slate-50 rounded-xl p-6 border border-slate-200">
+                            <ul class="space-y-4">
+                                <li class="flex gap-3">
+                                    <span class="font-bold text-indigo-600 w-24 flex-shrink-0">Acceder:</span>
+                                    <span class="text-slate-600 text-sm">Solicitar una copia de los datos que tenemos sobre ti.</span>
+                                </li>
+                                <li class="flex gap-3">
+                                    <span class="font-bold text-indigo-600 w-24 flex-shrink-0">Corregir:</span>
+                                    <span class="text-slate-600 text-sm">Actualizar tu información si es incorrecta o incompleta desde tu perfil.</span>
+                                </li>
+                                <li class="flex gap-3">
+                                    <span class="font-bold text-indigo-600 w-24 flex-shrink-0">Eliminar:</span>
+                                    <span class="text-slate-600 text-sm">Solicitar que eliminemos tus datos de nuestros sistemas (Derecho al olvido), salvo obligaciones legales.</span>
+                                </li>
+                            </ul>
+                            <div class="mt-6 pt-4 border-t border-slate-200">
+                                <p class="text-sm text-slate-500">
+                                    Para ejercer cualquiera de estos derechos, contáctanos en <a href="#" class="text-indigo-600 font-medium underline">privacidad@techstore.com</a>.
+                                </p>
+                            </div>
+                        </div>
+                    </section>
+
+                </div>
+            </main>
+        </div>
+
+    </div>
+
+    <!-- --- FOOTER --- -->
+    <footer class="bg-[#0B1120] text-gray-400 py-12 border-t border-gray-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div>
+                <div class="flex items-center gap-2 mb-4 text-white">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect><rect x="9" y="9" width="6" height="6"></rect><line x1="9" y1="1" x2="9" y2="4"></line><line x1="15" y1="1" x2="15" y2="4"></line><line x1="9" y1="20" x2="9" y2="23"></line><line x1="15" y1="20" x2="15" y2="23"></line><line x1="20" y1="9" x2="23" y2="9"></line><line x1="20" y1="14" x2="23" y2="14"></line><line x1="1" y1="9" x2="4" y2="9"></line><line x1="1" y1="14" x2="4" y2="14"></line></svg>
+                    <span class="font-bold text-lg">TechStore</span>
+                </div>
+                <p class="text-sm">Tu destino premium para la tecnología más avanzada. Hardware de alto rendimiento para trabajo y juego.</p>
+            </div>
+            <div>
+                <h4 class="text-white font-bold mb-4">Compañía</h4>
+                <ul class="space-y-2 text-sm">
+                    <li><a href="/views/nosotros.html" class="hover:text-white cursor-pointer">Sobre Nosotros</a></li>
+                    <li><a href="/views/blog.html" class="hover:text-white cursor-pointer">Blog Tech</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="text-white font-bold mb-4">Soporte</h4>
+                <ul class="space-y-2 text-sm">
+                    <li><a href="/views/centro_ayuda.html" class="hover:text-white cursor-pointer">Centro de Ayuda</a></li>
+                    <li><a href="/views/devoluciones.html" class="hover:text-white cursor-pointer">Devoluciones</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="text-white font-bold mb-4">Legal</h4>
+                <ul class="space-y-2 text-sm">
+                    <li><a href="/views/terminos.html" class="hover:text-white cursor-pointer">Términos</a></li>
+                    <li><a href="/views/privacidad.html" class="text-indigo-400 font-bold cursor-pointer">Privacidad</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="max-w-7xl mx-auto px-4 mt-12 pt-8 border-t border-gray-800 text-center text-xs">
+            © 2024 TechStore. Todos los derechos reservados.
+        </div>
+    </footer>
+
+    <!-- Script para activar link del menú al hacer scroll -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const sections = document.querySelectorAll('section');
+            const navLinks = document.querySelectorAll('.nav-link');
+
+            window.addEventListener('scroll', () => {
+                let current = '';
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    if (scrollY >= (sectionTop - 150)) {
+                        current = section.getAttribute('id');
+                    }
+                });
+
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href').includes(current)) {
+                        link.classList.add('active');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

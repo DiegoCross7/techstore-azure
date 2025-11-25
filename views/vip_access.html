@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TechStore VIP Club</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- Fuentes Google -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Audiowide&family=Space+Mono&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Audiowide', 'cursive'],
+                        mono: ['Space Mono', 'monospace'],
+                    },
+                    colors: {
+                        yape: '#742284',
+                        plin: '#00C9E0',
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #0f172a; overflow-x: hidden; }
+        .bg-vip-gradient { background: linear-gradient(to right, #0f0c29, #302b63, #24243e); }
+        .text-gold-gradient { background: linear-gradient(to right, #BF953F, #FCF6BA, #B38728, #FBF5B7, #AA771C); -webkit-background-clip: text; background-clip: text; color: transparent; }
+        .glass-panel { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.05); }
+        
+        /* Efecto Ticket Boleta */
+        .receipt-jagged {
+            background-image: linear-gradient(135deg, transparent 50%, white 50%), linear-gradient(45deg, white 50%, transparent 50%);
+            background-position: bottom;
+            background-size: 20px 20px;
+            background-repeat: repeat-x;
+        }
+        
+        .fade-in { animation: fadeIn 0.5s ease-in-out forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .skeleton { background: linear-gradient(90deg, #1e293b 25%, #334155 50%, #1e293b 75%); background-size: 200% 100%; animation: loading 1.5s infinite; }
+        @keyframes loading { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+    </style>
+</head>
+<body class="text-slate-200">
+
+    <!-- ========================================== -->
+    <!-- VISTA 1: ACCESO (LANDING PAGE) -->
+    <!-- ========================================== -->
+    <div id="view-access" class="flex items-center justify-center min-h-screen p-4 transition-all duration-500">
+        <div class="relative w-full max-w-6xl mx-auto my-12">
+            <div class="absolute inset-0 bg-gradient-to-r from-slate-900 to-indigo-950 rounded-3xl transform -skew-y-1 shadow-2xl translate-y-2"></div>
+
+            <div class="relative bg-slate-900 rounded-3xl p-8 md:p-16 overflow-hidden shadow-2xl border border-white/10">
+                <div class="absolute top-0 right-0 -mr-20 -mt-20 w-96 h-96 bg-indigo-500/20 rounded-full blur-[100px]"></div>
+                <div class="absolute bottom-0 left-0 -ml-20 -mb-20 w-80 h-80 bg-purple-500/10 rounded-full blur-[80px]"></div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center relative z-10">
+                    <div class="space-y-8 text-center lg:text-left">
+                        <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-yellow-500/10 text-yellow-400 text-sm font-bold border border-yellow-500/20 backdrop-blur-md">
+                            <i data-lucide="crown" size="16"></i> Club TechStore VIP
+                        </div>
+                        <h2 class="text-4xl md:text-5xl font-bold text-white leading-tight">
+                            Acceso exclusivo a <br>
+                            <span class="text-transparent bg-clip-text bg-gradient-to-r from-yellow-200 to-yellow-500">ofertas limitadas</span>
+                        </h2>
+                        <p class="text-slate-300 text-lg leading-relaxed max-w-lg mx-auto lg:mx-0">
+                            Únete a la élite tecnológica. Paga al instante con <span class="text-yape font-bold">Yape</span> o <span class="text-plin font-bold">Plin</span> y recibe tu boleta digital.
+                        </p>
+                        <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start text-sm font-medium text-slate-400">
+                            <div class="flex items-center gap-2 bg-slate-800/50 px-4 py-2 rounded-lg border border-white/5">
+                                <i data-lucide="check-circle" class="text-yellow-500" size="16"></i> <span>Membresía Gratuita</span>
+                            </div>
+                            <div class="flex items-center gap-2 bg-slate-800/50 px-4 py-2 rounded-lg border border-white/5">
+                                <i data-lucide="qr-code" class="text-white" size="16"></i> <span>Pagos QR Rápidos</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="relative">
+                        <div class="absolute inset-0 bg-gradient-to-tr from-yellow-500/20 to-purple-500/20 rounded-2xl blur opacity-30 transform rotate-3"></div>
+                        <div class="bg-white p-8 rounded-2xl shadow-2xl relative">
+                            <form onsubmit="vipSystem.openDataModal(event)" class="space-y-5">
+                                <div class="text-center mb-6">
+                                    <h3 class="text-2xl font-bold text-slate-900">Solicitar Acceso</h3>
+                                    <p class="text-slate-500 text-sm">Ingresa tu correo para iniciar.</p>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-700 uppercase mb-2 tracking-wider">Correo Electrónico</label>
+                                    <div class="relative group">
+                                        <i data-lucide="mail" class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5 group-focus-within:text-indigo-600 transition"></i>
+                                        <input type="email" id="vip-initial-email" placeholder="tu@correo.com" class="w-full pl-10 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-600 outline-none transition font-medium text-slate-700" required>
+                                    </div>
+                                </div>
+                                <button type="submit" class="w-full bg-slate-900 text-white py-4 rounded-xl font-bold hover:bg-indigo-600 transition shadow-lg shadow-indigo-500/20 flex justify-center items-center gap-2 group">
+                                    Continuar <i data-lucide="arrow-right" class="group-hover:translate-x-1 transition-transform" size="18"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                    <div>
+    <button 
+        type="button" 
+        onclick="window.location.href='/index.html'"
+        class="w-full bg-slate-900 text-white py-4 rounded-xl font-bold hover:bg-indigo-600 transition shadow-lg shadow-indigo-500/20 flex justify-center items-center gap-2 group"
+    >
+        Volver
+        <i data-lucide="arrow-left" class="group-hover:translate-x-1 transition-transform" size="18"></i>
+    </button>
+</div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- VISTA 2: TIENDA VIP -->
+    <!-- ========================================== -->
+    <div id="view-store" class="hidden min-h-screen flex-col bg-[#0B1120]">
+        
+        <!-- HEADER -->
+        <header class="bg-[#050914] text-white sticky top-0 z-50 border-b border-indigo-900/30 backdrop-blur-md bg-opacity-90">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between items-center h-20">
+                    <div class="flex items-center gap-2 cursor-pointer" onclick="window.location.reload()">
+                        <div class="bg-gradient-to-br from-indigo-600 to-purple-600 p-1.5 rounded-lg shadow-[0_0_15px_rgba(79,70,229,0.5)]">
+                            <i data-lucide="cpu" class="text-white"></i>
+                        </div>
+                        <div class="flex flex-col leading-none">
+                            <span class="text-xl font-bold tracking-tight font-display text-white">TechStore</span>
+                            <span class="text-[10px] text-yellow-400 uppercase tracking-widest font-bold">VIP</span>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-4">
+                        <div class="text-right hidden sm:block">
+                            <p class="text-xs text-gray-400">Bienvenido,</p>
+                            <p class="text-sm font-bold text-white" id="user-display-name">Invitado</p>
+                        </div>
+                        <div class="w-10 h-10 rounded-full bg-gradient-to-r from-yellow-400 to-yellow-600 p-[2px]">
+                            <div class="w-full h-full rounded-full bg-black flex items-center justify-center overflow-hidden">
+                                <i data-lucide="user" class="text-yellow-500"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- HERO BANNER -->
+        <div class="relative bg-vip-gradient overflow-hidden">
+            <div class="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-purple-900/20 to-transparent"></div>
+            <div class="absolute -bottom-24 -left-24 w-96 h-96 bg-indigo-600/20 rounded-full blur-[100px]"></div>
+
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 relative z-10">
+                <div class="text-center mb-8">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-yellow-500/30 bg-yellow-500/10 text-yellow-400 text-xs font-bold tracking-wider mb-4">
+                        <span class="w-2 h-2 rounded-full bg-yellow-400 animate-pulse"></span> TIEMPO LIMITADO
+                    </div>
+                    <h1 class="text-4xl md:text-6xl font-display font-bold text-white mb-4">
+                        CYBER <span class="text-gold-gradient">DAYS</span>
+                    </h1>
+                    
+                    <!-- Timer Centrado -->
+                    <div class="flex justify-center gap-4">
+                        <div class="bg-black/40 backdrop-blur border border-white/10 p-3 rounded-xl text-center w-20">
+                            <span class="block text-2xl font-bold font-mono text-white" id="hours">00</span>
+                            <span class="text-[10px] text-gray-500 uppercase">Hs</span>
+                        </div>
+                        <div class="bg-black/40 backdrop-blur border border-white/10 p-3 rounded-xl text-center w-20">
+                            <span class="block text-2xl font-bold font-mono text-white" id="minutes">00</span>
+                            <span class="text-[10px] text-gray-500 uppercase">Min</span>
+                        </div>
+                        <div class="bg-black/40 backdrop-blur border border-white/10 p-3 rounded-xl text-center w-20">
+                            <span class="block text-2xl font-bold font-mono text-yellow-400" id="seconds">00</span>
+                            <span class="text-[10px] text-gray-500 uppercase">Seg</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PRODUCTOS -->
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 flex-grow">
+            <h2 class="text-2xl font-display font-bold text-white mb-8 border-l-4 border-yape pl-4">Catálogo Exclusivo</h2>
+            
+            <!-- Grid de Productos -->
+            <div id="products-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Skeletons de carga -->
+                <div class="glass-panel rounded-2xl h-[450px] p-4 animate-pulse">
+                    <div class="w-full h-56 skeleton rounded-xl mb-4"></div>
+                    <div class="h-6 skeleton w-3/4 rounded mb-4"></div>
+                    <div class="h-20 skeleton w-full rounded mb-4"></div>
+                    <div class="h-12 skeleton w-full rounded mt-auto"></div>
+                </div>
+                <div class="glass-panel rounded-2xl h-[450px] p-4 animate-pulse hidden md:block">
+                    <div class="w-full h-56 skeleton rounded-xl mb-4"></div>
+                    <div class="h-6 skeleton w-3/4 rounded mb-4"></div>
+                    <div class="h-20 skeleton w-full rounded mb-4"></div>
+                    <div class="h-12 skeleton w-full rounded mt-auto"></div>
+                </div>
+                <div class="glass-panel rounded-2xl h-[450px] p-4 animate-pulse hidden lg:block">
+                    <div class="w-full h-56 skeleton rounded-xl mb-4"></div>
+                    <div class="h-6 skeleton w-3/4 rounded mb-4"></div>
+                    <div class="h-20 skeleton w-full rounded mb-4"></div>
+                    <div class="h-12 skeleton w-full rounded mt-auto"></div>
+                </div>
+            </div>
+        </div>
+
+        <footer class="bg-[#050914] text-gray-500 py-8 border-t border-gray-800/50 mt-auto">
+            <div class="max-w-7xl mx-auto px-4 text-center">
+                <p class="text-xs">© 2024 TechStore VIP. Pagos procesados vía QR.</p>
+            </div>
+        </footer>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- MODALES -->
+    <!-- ========================================== -->
+
+    <!-- 1. Modal Registro -->
+    <div id="vip-data-modal" class="fixed inset-0 z-[9990] bg-black/60 hidden items-center justify-center p-4 backdrop-blur-sm transition-opacity opacity-0">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden transform scale-95 transition-all duration-300" id="vip-modal-content">
+            <div class="bg-slate-900 p-6 text-center relative overflow-hidden">
+                <div class="relative z-10">
+                    <div class="w-16 h-16 bg-white/10 rounded-full flex items-center justify-center mx-auto mb-4 backdrop-blur-sm border border-white/20">
+                        <i data-lucide="user-plus" class="text-white" size="32"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white">Datos de Contacto</h3>
+                </div>
+            </div>
+            <div class="p-8">
+                <form onsubmit="vipSystem.startValidation(event)" class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-bold text-slate-700 mb-1">Nombre para la Boleta</label>
+                        <input type="text" id="vip-name" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-600 outline-none uppercase" required placeholder="Ej: JUAN PÉREZ">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-bold text-slate-700 mb-1">Celular (Yape/Plin)</label>
+                        <input type="tel" id="vip-phone" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-600 outline-none" required placeholder="Ej: 999 000 000">
+                    </div>
+                    <div id="loading-container" class="hidden space-y-2 pt-2">
+                        <div class="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
+                            <div class="bg-indigo-600 h-2 rounded-full w-0 transition-all duration-[2000ms] ease-out" id="loading-progress"></div>
+                        </div>
+                        <p class="text-center text-xs text-indigo-600 font-bold animate-pulse">Verificando disponibilidad...</p>
+                    </div>
+                    <div class="pt-4" id="modal-buttons">
+                        <button type="submit" class="w-full bg-indigo-600 text-white py-3 rounded-lg font-bold hover:bg-indigo-700 transition shadow-lg">Ingresar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. Modal Detalles Producto -->
+    <div id="product-details-modal" class="fixed inset-0 z-[1000] bg-black/80 hidden items-center justify-center p-4 backdrop-blur-sm transition-opacity opacity-0">
+        <div class="bg-slate-900 border border-white/10 rounded-2xl w-full max-w-2xl overflow-hidden transform scale-95 transition-all duration-300 flex flex-col md:flex-row" id="details-content">
+            <div class="md:w-1/2 h-64 md:h-auto relative">
+                <img id="detail-img" src="" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/600x400/1e293b/white?text=TechStore+Image'">
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-900 to-transparent md:bg-gradient-to-r"></div>
+            </div>
+            <div class="md:w-1/2 p-8 flex flex-col justify-center">
+                <button onclick="storeLogic.closeDetails()" class="absolute top-4 right-4 text-slate-400 hover:text-white"><i data-lucide="x"></i></button>
+                <div id="detail-badge" class="inline-block px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wider text-white mb-2 w-max"></div>
+                <h3 id="detail-title" class="text-2xl font-bold text-white mb-2"></h3>
+                <p id="detail-desc" class="text-slate-400 text-sm mb-6 leading-relaxed"></p>
+                
+                <div class="flex items-end gap-3 mb-6">
+                    <span id="detail-price" class="text-3xl font-bold text-yellow-400"></span>
+                    <span id="detail-old-price" class="text-sm text-slate-600 line-through mb-1"></span>
+                </div>
+
+                <button id="detail-buy-btn" class="w-full bg-white text-slate-900 font-bold py-3 rounded-lg hover:bg-gray-100 transition flex items-center justify-center gap-2">
+                    Comprar Ahora <i data-lucide="chevron-right"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. Modal Pago (Yape/Plin) -->
+    <div id="payment-modal" class="fixed inset-0 z-[1000] bg-black/80 hidden items-center justify-center p-4 backdrop-blur-sm transition-opacity opacity-0">
+        <div class="bg-white rounded-3xl w-full max-w-sm overflow-hidden transform scale-95 transition-all duration-300" id="payment-content">
+            <!-- Tabs -->
+            <div class="flex border-b border-gray-100">
+                <button onclick="paymentApp.switchMethod('yape')" id="tab-yape" class="flex-1 py-4 text-center font-bold text-yape border-b-2 border-yape bg-gray-50">Yape</button>
+                <button onclick="paymentApp.switchMethod('plin')" id="tab-plin" class="flex-1 py-4 text-center font-bold text-slate-400 hover:text-plin transition">Plin</button>
+            </div>
+            
+            <div class="p-6 text-center relative">
+                <button onclick="paymentApp.closePayment()" class="absolute top-0 right-4 text-slate-300 hover:text-slate-500 text-2xl">&times;</button>
+                
+                <div class="mb-6 mt-2">
+                    <div id="qr-container" class="w-48 h-48 mx-auto rounded-xl flex items-center justify-center border-2 border-dashed border-yape bg-gray-50 transition-colors duration-300">
+                        <i data-lucide="qr-code" class="w-20 h-20 text-slate-300"></i>
+                    </div>
+                    <p id="pay-number" class="text-xl font-bold text-slate-800 mt-3">+51 987 654 321</p>
+                    <p class="text-xs text-slate-500">Titular: TechStore SAC</p>
+                </div>
+
+                <div class="bg-slate-50 p-3 rounded-lg border border-slate-100 mb-6">
+                    <p class="text-xs text-slate-500 uppercase font-bold">Total a Pagar</p>
+                    <p class="text-2xl font-bold text-slate-900" id="pay-amount">S/ 0.00</p>
+                </div>
+
+                <form onsubmit="paymentApp.verifyPayment(event)">
+                    <div class="text-left mb-4">
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Código de Operación</label>
+                        <input type="text" id="op-code" class="w-full p-3 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-yape outline-none font-mono text-center tracking-widest text-lg" placeholder="123456" maxlength="8" required>
+                        <p class="text-[10px] text-slate-400 mt-1">Ingresa el código que aparece en tu comprobante.</p>
+                    </div>
+                    <button type="submit" id="confirm-btn" class="w-full bg-yape text-white font-bold py-3.5 rounded-xl transition shadow-lg hover:opacity-90 flex justify-center items-center gap-2">
+                        <span>Confirmar Pago</span>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- 4. Modal Boleta (Receipt) -->
+    <div id="receipt-modal" class="fixed inset-0 z-[2000] bg-black/90 hidden items-center justify-center p-4 backdrop-blur-md transition-opacity opacity-0">
+        <div class="bg-white w-full max-w-xs shadow-2xl relative transform scale-90 transition-all duration-500" id="receipt-content">
+            <!-- Papel cortado arriba -->
+            <div class="absolute -top-2 left-0 w-full h-4 bg-white receipt-jagged transform rotate-180"></div>
+            
+            <div class="p-8 text-center font-mono text-slate-800 text-sm">
+                <div class="mb-4">
+                    <div class="w-12 h-12 bg-slate-900 rounded flex items-center justify-center mx-auto mb-2 text-white">
+                        <i data-lucide="check" size="24"></i>
+                    </div>
+                    <h2 class="text-xl font-bold uppercase">¡Pago Exitoso!</h2>
+                    <p class="text-xs text-slate-500">Gracias por su compra</p>
+                </div>
+
+                <div class="border-b-2 border-dashed border-slate-300 pb-4 mb-4">
+                    <p class="text-xs text-slate-500 uppercase">Cliente</p>
+                    <p class="font-bold text-lg" id="rec-name">NOMBRE</p>
+                    <p class="text-xs text-slate-400" id="rec-date">00/00/00 00:00</p>
+                </div>
+
+                <div class="text-left mb-4 space-y-2">
+                    <div class="flex justify-between">
+                        <span id="rec-prod">Producto</span>
+                        <span class="font-bold" id="rec-price">S/ 0.00</span>
+                    </div>
+                    <div class="flex justify-between text-slate-500 text-xs">
+                        <span>Método</span>
+                        <span id="rec-method">YAPE</span>
+                    </div>
+                    <div class="flex justify-between text-slate-500 text-xs">
+                        <span>Operación</span>
+                        <span id="rec-code">123456</span>
+                    </div>
+                </div>
+
+                <div class="border-t-2 border-dashed border-slate-300 pt-4 mb-6">
+                    <div class="flex justify-between items-end">
+                        <span class="font-bold text-lg">TOTAL</span>
+                        <span class="font-bold text-2xl" id="rec-total">S/ 0.00</span>
+                    </div>
+                </div>
+
+                <!-- AQUI ES DONDE SE HA CAMBIADO EL BOTON -->
+                <button onclick="paymentApp.closeReceipt()" class="w-full bg-slate-900 text-white py-3 rounded font-bold hover:bg-slate-800 transition">
+                    Seguir Comprando
+                </button>
+            </div>
+
+            <!-- Papel cortado abajo -->
+            <div class="absolute -bottom-2 left-0 w-full h-4 bg-white receipt-jagged"></div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        lucide.createIcons();
+
+        // --- API PRODUCTOS ---
+        class ProductAPI {
+            static async getAll() {
+                // 6 Productos con imágenes reales
+                return [
+                    {
+                        id: 1,
+                        name: "Laptop Gamer Legion",
+                        desc: "Procesador Ryzen 7, RTX 3060, 16GB RAM, 512GB SSD. Pantalla 144Hz.",
+                        price: 3599,
+                        oldPrice: 4299,
+                        // --- URL ACTUALIZADA ---
+                        image: "https://images.unsplash.com/photo-1593640408182-31c70c8268f5?q=80&w=800&auto=format&fit=crop", 
+                        badge: { text: "Flash Sale", color: "bg-red-600" },
+                        stock: 85
+                    },
+                    {
+                        id: 2,
+                        name: "Monitor Curvo 34\"",
+                        desc: "Resolución WQHD, 165Hz, 1ms respuesta. Panel VA HDR10.",
+                        price: 1499,
+                        oldPrice: 1899,
+                        image: "https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?q=80&w=800&auto=format&fit=crop",
+                        badge: { text: "Pocos", color: "bg-orange-500" },
+                        stock: 20
+                    },
+                    {
+                        id: 3,
+                        name: "Teclado Mecánico RGB",
+                        desc: "Switches Cherry MX Blue, chasis de aluminio, iluminación por tecla.",
+                        price: 299,
+                        oldPrice: 450,
+                        image: "https://images.unsplash.com/photo-1511467687858-23d96c32e4ae?q=80&w=800&auto=format&fit=crop",
+                        badge: { text: "Nuevo", color: "bg-blue-600" },
+                        stock: 95
+                    },
+                    {
+                        id: 4,
+                        name: "Headset Wireless Pro",
+                        desc: "Cancelación de ruido activa, batería de 30 horas, sonido espacial 7.1.",
+                        price: 399,
+                        oldPrice: 599,
+                        image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=800&auto=format&fit=crop",
+                        badge: { text: "Oferta", color: "bg-purple-600" },
+                        stock: 60
+                    },
+                    {
+                        id: 5,
+                        name: "Smartwatch Series 5",
+                        desc: "Monitor de ritmo cardíaco, GPS, resistente al agua 50m. Correa deportiva.",
+                        price: 499,
+                        oldPrice: 699,
+                        image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=800&auto=format&fit=crop",
+                        badge: { text: "Popular", color: "bg-green-600" },
+                        stock: 45
+                    },
+                    {
+                        id: 6,
+                        name: "Consola Retro Handheld",
+                        desc: "Pantalla IPS 3.5\", emula PS1/N64/GBA. Batería recargable 3500mAh.",
+                        price: 249,
+                        oldPrice: 320,
+                        image: "https://images.unsplash.com/photo-1592840496694-26d035b52b48?q=80&w=800&auto=format&fit=crop",
+                        badge: { text: "Viral", color: "bg-pink-600" },
+                        stock: 10
+                    }
+                ];
+            }
+        }
+
+        // --- LÓGICA TIENDA ---
+        const storeLogic = {
+            loadProducts: async () => {
+                const grid = document.getElementById('products-grid');
+                const products = await ProductAPI.getAll();
+                grid.innerHTML = '';
+
+                products.forEach(p => {
+                    const card = `
+                        <div class="glass-panel rounded-2xl overflow-hidden group hover:border-white/20 transition-all duration-300 flex flex-col h-full relative">
+                            <div class="relative h-56 overflow-hidden cursor-pointer" onclick="storeLogic.openDetails(${p.id})">
+                                <div class="absolute top-3 left-3 ${p.badge.color} text-white text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider z-10 shadow-lg">${p.badge.text}</div>
+                                <img src="${p.image}" alt="${p.name}" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700" onerror="this.src='https://placehold.co/600x400/1e293b/white?text=TechStore+Image'">
+                                <div class="absolute inset-0 bg-gradient-to-t from-[#0B1120] to-transparent opacity-60"></div>
+                                <div class="absolute bottom-3 right-3 bg-black/50 backdrop-blur px-2 py-1 rounded text-xs text-white opacity-0 group-hover:opacity-100 transition">Ver Detalles</div>
+                            </div>
+                            <div class="p-5 flex flex-col flex-grow">
+                                <h3 class="text-white font-bold text-lg mb-1 leading-tight">${p.name}</h3>
+                                <p class="text-slate-400 text-xs mb-4 line-clamp-2">${p.desc}</p>
+                                
+                                <div class="mt-auto">
+                                    <div class="flex items-end gap-2 mb-3">
+                                        <span class="text-2xl font-bold text-yellow-400">S/ ${p.price}</span>
+                                        <span class="text-sm text-gray-500 line-through mb-1">S/ ${p.oldPrice}</span>
+                                    </div>
+                                    
+                                    <div class="w-full bg-gray-800 h-1.5 rounded-full mb-4 overflow-hidden">
+                                        <div class="bg-gradient-to-r from-indigo-500 to-purple-500 h-full" style="width: ${p.stock}%"></div>
+                                    </div>
+
+                                    <div class="flex gap-2">
+                                        <button onclick="storeLogic.openDetails(${p.id})" class="px-3 py-2 rounded-lg border border-white/10 hover:bg-white/10 text-white transition">
+                                            <i data-lucide="eye" size="18"></i>
+                                        </button>
+                                        <button onclick="paymentApp.openPayment('${p.name}', ${p.price})" class="flex-1 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-bold py-2 rounded-lg transition shadow-lg flex items-center justify-center gap-2">
+                                            Comprar <i data-lucide="shopping-bag" size="16"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    grid.insertAdjacentHTML('beforeend', card);
+                });
+                lucide.createIcons();
+            },
+
+            openDetails: async (id) => {
+                const products = await ProductAPI.getAll();
+                const p = products.find(x => x.id === id);
+                if(!p) return;
+
+                document.getElementById('detail-img').src = p.image;
+                document.getElementById('detail-title').innerText = p.name;
+                document.getElementById('detail-desc').innerText = p.desc + " Garantía de 1 año incluida. Envío gratuito a nivel nacional para miembros VIP.";
+                document.getElementById('detail-price').innerText = `S/ ${p.price}`;
+                document.getElementById('detail-old-price').innerText = `S/ ${p.oldPrice}`;
+                
+                const badge = document.getElementById('detail-badge');
+                badge.className = `inline-block px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wider text-white mb-2 w-max ${p.badge.color}`;
+                badge.innerText = p.badge.text;
+
+                // Configurar botón de compra del modal
+                const btn = document.getElementById('detail-buy-btn');
+                btn.onclick = () => {
+                    storeLogic.closeDetails();
+                    setTimeout(() => paymentApp.openPayment(p.name, p.price), 300);
+                };
+
+                const modal = document.getElementById('product-details-modal');
+                const content = document.getElementById('details-content');
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+                setTimeout(() => {
+                    modal.classList.remove('opacity-0');
+                    content.classList.remove('scale-95');
+                    content.classList.add('scale-100');
+                }, 10);
+            },
+
+            closeDetails: () => {
+                const modal = document.getElementById('product-details-modal');
+                const content = document.getElementById('details-content');
+                modal.classList.add('opacity-0');
+                content.classList.remove('scale-100');
+                content.classList.add('scale-95');
+                setTimeout(() => {
+                    modal.classList.add('hidden');
+                    modal.classList.remove('flex');
+                }, 300);
+            }
+        };
+
+        // --- SISTEMA DE PAGOS (YAPE / PLIN) ---
+        const paymentApp = {
+            currentProduct: '',
+            currentPrice: 0,
+            method: 'yape', // yape | plin
+
+            openPayment: (product, price) => {
+                paymentApp.currentProduct = product;
+                paymentApp.currentPrice = price;
+                
+                document.getElementById('pay-amount').innerText = `S/ ${price.toFixed(2)}`;
+                paymentApp.switchMethod('yape'); // Default
+
+                const modal = document.getElementById('payment-modal');
+                const content = document.getElementById('payment-content');
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+                setTimeout(() => {
+                    modal.classList.remove('opacity-0');
+                    content.classList.remove('scale-95');
+                    content.classList.add('scale-100');
+                }, 10);
+            },
+
+            switchMethod: (method) => {
+                paymentApp.method = method;
+                const btnYape = document.getElementById('tab-yape');
+                const btnPlin = document.getElementById('tab-plin');
+                const qrContainer = document.getElementById('qr-container');
+                const confirmBtn = document.getElementById('confirm-btn');
+                const input = document.getElementById('op-code');
+
+                // Reset estilos tabs
+                btnYape.className = "flex-1 py-4 text-center font-bold transition text-slate-400 hover:text-yape";
+                btnPlin.className = "flex-1 py-4 text-center font-bold transition text-slate-400 hover:text-plin";
+
+                if(method === 'yape') {
+                    btnYape.className = "flex-1 py-4 text-center font-bold text-yape border-b-2 border-yape bg-gray-50";
+                    qrContainer.className = "w-48 h-48 mx-auto rounded-xl flex items-center justify-center border-2 border-dashed border-yape bg-purple-50 transition-colors duration-300";
+                    confirmBtn.className = "w-full bg-yape text-white font-bold py-3.5 rounded-xl transition shadow-lg hover:opacity-90 flex justify-center items-center gap-2";
+                    input.className = "w-full p-3 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-yape outline-none font-mono text-center tracking-widest text-lg";
+                } else {
+                    btnPlin.className = "flex-1 py-4 text-center font-bold text-plin border-b-2 border-plin bg-gray-50";
+                    qrContainer.className = "w-48 h-48 mx-auto rounded-xl flex items-center justify-center border-2 border-dashed border-plin bg-cyan-50 transition-colors duration-300";
+                    confirmBtn.className = "w-full bg-plin text-white font-bold py-3.5 rounded-xl transition shadow-lg hover:opacity-90 flex justify-center items-center gap-2";
+                    input.className = "w-full p-3 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-plin outline-none font-mono text-center tracking-widest text-lg";
+                }
+            },
+
+            closePayment: () => {
+                const modal = document.getElementById('payment-modal');
+                const content = document.getElementById('payment-content');
+                modal.classList.add('opacity-0');
+                content.classList.remove('scale-100');
+                content.classList.add('scale-95');
+                setTimeout(() => {
+                    modal.classList.add('hidden');
+                    modal.classList.remove('flex');
+                    document.getElementById('op-code').value = '';
+                }, 300);
+            },
+
+            verifyPayment: (e) => {
+                e.preventDefault();
+                const btn = document.getElementById('confirm-btn');
+                const originalText = btn.innerHTML;
+                const code = document.getElementById('op-code').value;
+
+                btn.innerHTML = `<div class="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div> Validando...`;
+                
+                // Simular red
+                setTimeout(() => {
+                    paymentApp.closePayment();
+                    paymentApp.showReceipt(code);
+                    btn.innerHTML = originalText;
+                }, 2000);
+            },
+
+            showReceipt: (code) => {
+                const modal = document.getElementById('receipt-modal');
+                const content = document.getElementById('receipt-content');
+                
+                // Llenar datos
+                document.getElementById('rec-name').innerText = vipSystem.currentUser;
+                document.getElementById('rec-date').innerText = new Date().toLocaleString();
+                document.getElementById('rec-prod').innerText = paymentApp.currentProduct;
+                document.getElementById('rec-price').innerText = `S/ ${paymentApp.currentPrice}`;
+                document.getElementById('rec-total').innerText = `S/ ${paymentApp.currentPrice}`;
+                document.getElementById('rec-method').innerText = paymentApp.method.toUpperCase();
+                document.getElementById('rec-code').innerText = code;
+
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+                setTimeout(() => {
+                    modal.classList.remove('opacity-0');
+                    content.classList.remove('scale-90');
+                    content.classList.add('scale-100');
+                }, 10);
+            },
+
+            // NUEVA FUNCIÓN PARA CERRAR LA BOLETA SIN RECARGAR
+            closeReceipt: () => {
+                const modal = document.getElementById('receipt-modal');
+                const content = document.getElementById('receipt-content');
+                
+                modal.classList.add('opacity-0');
+                content.classList.remove('scale-100');
+                content.classList.add('scale-90');
+                
+                setTimeout(() => {
+                    modal.classList.add('hidden');
+                    modal.classList.remove('flex');
+                }, 300);
+            }
+        };
+
+        // --- SISTEMA VIP (LOGIN) ---
+        const vipSystem = {
+            tempEmail: '',
+            currentUser: 'Invitado',
+
+            openDataModal: (e) => {
+                e.preventDefault();
+                document.getElementById('vip-data-modal').classList.remove('hidden');
+                document.getElementById('vip-data-modal').classList.add('flex');
+                setTimeout(() => {
+                    document.getElementById('vip-data-modal').classList.remove('opacity-0');
+                    document.getElementById('vip-modal-content').classList.add('scale-100');
+                }, 50);
+            },
+
+            startValidation: (e) => {
+                e.preventDefault();
+                const name = document.getElementById('vip-name').value;
+                vipSystem.currentUser = name.toUpperCase();
+
+                document.getElementById('modal-buttons').classList.add('hidden');
+                document.getElementById('loading-container').classList.remove('hidden');
+                setTimeout(() => document.getElementById('loading-progress').style.width = '100%', 50);
+
+                setTimeout(() => {
+                    // Transición de vista
+                    document.getElementById('vip-data-modal').classList.add('hidden');
+                    vipSystem.switchViewToStore();
+                }, 2000);
+            },
+
+            switchViewToStore: () => {
+                const viewAccess = document.getElementById('view-access');
+                viewAccess.style.opacity = '0';
+                viewAccess.style.transform = 'translateY(-20px)';
+                
+                setTimeout(() => {
+                    viewAccess.classList.add('hidden');
+                    const viewStore = document.getElementById('view-store');
+                    viewStore.classList.remove('hidden');
+                    viewStore.classList.add('flex');
+                    viewStore.classList.add('fade-in');
+                    
+                    document.getElementById('user-display-name').innerText = vipSystem.currentUser;
+                    storeLogic.loadProducts(); // Cargar catálogo
+                    
+                    // Timer Logic
+                    setInterval(() => {
+                        const now = new Date();
+                        const end = new Date();
+                        end.setHours(23, 59, 59);
+                        const diff = end - now;
+                        const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                        const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                        const s = Math.floor((diff % (1000 * 60)) / 1000);
+                        document.getElementById('hours').innerText = h.toString().padStart(2, '0');
+                        document.getElementById('minutes').innerText = m.toString().padStart(2, '0');
+                        document.getElementById('seconds').innerText = s.toString().padStart(2, '0');
+                    }, 1000);
+
+                }, 500);
+            }
+        };
+    </script>
+</body>
+</html>
