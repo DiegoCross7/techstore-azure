@@ -177,7 +177,8 @@ Responde SIEMPRE en español, de forma natural, útil y atractiva.`;
         if (chatHistory.length > 0) {
             fullPrompt += "Conversación previa:\n";
             chatHistory.forEach(msg => {
-                fullPrompt += `${msg.role === 'user' ? 'Cliente' : 'TechBot'}: ${msg.content}\n`;
+                const text = msg.parts?.[0]?.text || msg.content || '';
+                fullPrompt += `${msg.role === 'user' ? 'Cliente' : 'TechBot'}: ${text}\n`;
             });
         }
         fullPrompt += `\nCliente: ${userMessage}\nTechBot:`;
@@ -215,7 +216,7 @@ Responde SIEMPRE en español, de forma natural, útil y atractiva.`;
                 'X-Powered-By': 'Azure Cloud + Gemini AI'
             },
             body: {
-                response: botResponse,
+                reply: botResponse,
                 conversationId: context.executionContext.invocationId,
                 timestamp: new Date().toISOString()
             }
