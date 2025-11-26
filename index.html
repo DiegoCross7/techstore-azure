@@ -1217,9 +1217,8 @@
     <script>
         // CONFIG & DATA
         const API_BASE_URL = 'https://dummyjson.com';
-        // AVISO DE SEGURIDAD: En un entorno real, esta clave debe estar en el backend.
-        const GEMINI_API_KEY = "AIzaSyC8HrKl4Xldl2IPnOyNO3WTHG2RTW1KyP8";
-
+        // API de Gemini está configurada de forma segura en el backend (/api/chat)
+        
         const TECH_CATEGORIES = ['Smartphones', 'Laptops', 'Tv/Audio', 'Tablets', 'Consoles', 'Smartwatches', 'Cameras', 'Drones', 'Accessories'];
 
         // INVENTARIO MANUAL EXPANDIDO (Para cubrir lo que la API no trae)
@@ -1274,7 +1273,8 @@
                 lastOrder: null,
                 qrInterval: null,
                 isChatOpen: false,
-                chatHistory: [] // MEMORIA DE CONVERSACIÓN
+                chatHistory: [], // MEMORIA DE CONVERSACIÓN
+                sessionId: `session-${Date.now()}-${Math.random().toString(36).substr(2, 9)}` // ID único de sesión
             },
 
             init: async () => {
@@ -1427,91 +1427,58 @@
                     input.value = '';
                     app.chat.showTyping();
 
-                    // 2. MEMORIA: Guardar en historial
-                    app.state.chatHistory.push({
-                        role: "user",
-                        parts: [{ text: text }]
-                    });
-
-                    // 3. CONTEXTO: Sistema e Inventario
-                    const inventory = app.chat.getInventoryContext();
-                    const systemPrompt = `
-                    Eres TechBot, el asistente de ventas experto de TechStore.
-                    
-                    TU INVENTARIO ACTUAL: [${inventory}]
-
-                    REGLAS DE MEMORIA:
-                    1. Recuerda siempre lo que le has sugerido al cliente en los turnos anteriores.
-                    2. Si el cliente dice "agrega eso", "los que sugeriste" o "dame los 3", revisa tu historial de respuestas para saber a qué productos se refiere.
-
-                    REGLAS DE ACCIÓN:
-                    1. Responde de forma natural, breve y amable en español.
-                    2. Si el usuario quiere comprar algo, ver un producto o agregarlo a deseos, RESPONDE CON TEXTO Y LUEGO AGREGA UN COMANDO OCULTO al final.
-                    3. Formato del comando oculto: ||{"action": "TIPO", "id": ID_PRODUCTO, "qty": CANTIDAD}||
-                       - Tipos de acción: "add_cart", "add_wishlist", "view_product".
-                    4. Ejemplo: Si el usuario dice "quiero dos iphone 15", tu dices: "¡Claro! Agrego 2 iPhone 15 Pro Max a tu carrito. ||{"action":"add_cart","id":101,"qty":2}||"
-                    5. Si preguntan por ofertas, busca productos con descuento > 0 en el inventario provisto y lístalos.
-                    6. IMPORTANTE: Si el usuario pide múltiples productos (ej: "agrega los 3"), genera un comando oculto POR CADA producto. Ejemplo: ... texto ... ||{...}|| ||{...}|| ||{...}||
-                    `;
-
                     try {
-                        // Construimos el historial completo para enviar a la API
-                        // Ponemos el systemPrompt como el primer mensaje del usuario para dar contexto
-                        const apiContents = [
-                            {
-                                role: "user",
-                                parts: [{ text: systemPrompt }]
-                            },
-                            {
-                                role: "model",
-                                parts: [{ text: "Entendido. Soy TechBot, conozco el inventario y tengo memoria de esta conversación." }]
-                            },
-                            ...app.state.chatHistory
-                        ];
-
-                        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${GEMINI_API_KEY}`;
-
-                        const response = await fetch(url, {
+                        // Llamada al endpoint /api/chat (Azure Function con Gemini AI)
+                        const response = await fetch('/api/chat', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify({
-                                contents: apiContents
+                                message: text,
+                                history: app.state.chatHistory.slice(-10), // Últimos 10 mensajes
+                                sessionId: app.state.sessionId || 'default'
                             })
                         });
+
+                        if (!response.ok) {
+                            throw new Error(`Error ${response.status}: ${response.statusText}`);
+                        }
 
                         const data = await response.json();
                         app.chat.removeTyping();
 
-                        if (data.candidates && data.candidates[0].content) {
-                            let rawText = data.candidates[0].content.parts[0].text;
-
-                            // 4. MEMORIA: Guardar respuesta de la IA (incluyendo comandos ocultos)
+                        if (data.reply) {
+                            // Guardar mensaje del usuario en historial
                             app.state.chatHistory.push({
-                                role: "model",
-                                parts: [{ text: rawText }]
+                                role: "user",
+                                parts: [{ text: text }]
                             });
 
-                            // 5. PROCESAMIENTO: Buscar y ejecutar comandos
-                            let visibleText = rawText;
+                            // Guardar respuesta de la IA en historial
+                            app.state.chatHistory.push({
+                                role: "model",
+                                parts: [{ text: data.reply }]
+                            });
+
+                            // Buscar y ejecutar comandos ocultos (si los hay)
+                            let visibleText = data.reply;
                             const cmdRegex = /\|\|(.*?)\|\|/g;
                             let match;
 
-                            // Ejecutar TODOS los comandos encontrados (útil para "agrega los 3")
-                            while ((match = cmdRegex.exec(rawText)) !== null) {
+                            while ((match = cmdRegex.exec(data.reply)) !== null) {
                                 app.chat.executeCommand(match[1]);
                             }
 
-                            // Limpiar texto para UI
-                            visibleText = rawText.replace(cmdRegex, '').trim();
+                            // Limpiar comandos del texto visible
+                            visibleText = data.reply.replace(cmdRegex, '').trim();
 
                             app.chat.appendMessage('bot', visibleText);
                         } else {
                             app.chat.appendMessage('bot', "Lo siento, tuve un problema procesando eso. ¿Podrías intentar de nuevo?");
                         }
                     } catch (error) {
-                        console.error(error);
+                        console.error('Chat API Error:', error);
                         app.chat.removeTyping();
-                        app.chat.appendMessage('bot', "Error de conexión. Por favor verifica tu internet.");
+                        app.chat.appendMessage('bot', "Error de conexión con el servidor. Por favor intenta de nuevo.");
                     }
                 }
             },
