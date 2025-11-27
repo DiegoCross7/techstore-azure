@@ -54,8 +54,8 @@ module.exports = async function (context, req) {
         context.log('🔧 Inicializando Gemini AI...');
         const genAI = new GoogleGenerativeAI(geminiApiKey);
         context.log('✅ GoogleGenerativeAI inicializado');
-        const model = genAI.getGenerativeModel({ model: "gemini-pro" });
-        context.log('✅ Modelo gemini-pro obtenido');
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+        context.log('✅ Modelo gemini-1.5-flash obtenido');
 
         // Inventario completo de productos
         const fullInventory = `
