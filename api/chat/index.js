@@ -26,12 +26,16 @@ module.exports = async function (context, req) {
     const geminiApiKey = process.env.GEMINI_API_KEY;
 
     if (!geminiApiKey) {
+        context.log.error('❌ GEMINI_API_KEY no está configurada');
         context.res = {
             status: 500,
-            body: { error: "Configuración faltante" }
+            body: { error: "GEMINI_API_KEY no configurada en variables de entorno" }
         };
         return;
     }
+
+    context.log('✅ GEMINI_API_KEY encontrada (longitud: ' + geminiApiKey.length + ')');
+
 
     const userMessage = req.body?.message;
     const chatHistory = req.body?.history || [];
